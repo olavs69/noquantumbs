@@ -3,12 +3,13 @@
 import { NextResponse } from "next/server";
 import { detectLanguage } from "@/lib/language-detection";
 import { analyzeCodeForQuantumPotential } from "@/lib/quantum-analysis";
+import { convertToJavaScript } from "@/lib/openai-converter";
 
 export async function POST(request) {
   try {
-    const { code } = await request.json();
+    const { code: originalCode } = await request.json();
 
-    if (!code || !code.trim() || code.length < 20) {
+    if (!originalCode || !originalCode.trim() || originalCode.length < 20) {
       return NextResponse.json(
         {
           error:
@@ -19,30 +20,77 @@ export async function POST(request) {
     }
 
     // 1. Detect Language using the imported helper
-    const detectedLanguage = await detectLanguage(code);
+    const detectedLanguage = await detectLanguage(originalCode);
+    let codeToAnalyze = originalCode;
+    let conversionRequired = false;
+    let conversionError = null;
 
-    // 2. Check if JavaScript/JSX
+    // 2. Check if conversion to JavaScript is needed
+    // Convert if not JS/JSX (this includes 'unknown')
     if (detectedLanguage !== "js" && detectedLanguage !== "jsx") {
-      return NextResponse.json(
-        {
-          error: "Code analysis requires JavaScript or JSX.",
-          detectedLanguage: detectedLanguage,
-        },
-        { status: 400 }
+      conversionRequired = true;
+      console.log(
+        `Detected language: ${detectedLanguage}. Attempting conversion to JavaScript.`
       );
+      try {
+        codeToAnalyze = await convertToJavaScript(
+          originalCode,
+          detectedLanguage
+        );
+        console.log("Conversion successful. Proceeding with analysis.");
+      } catch (err) {
+        console.error("Conversion failed:", err);
+        conversionError =
+          err.message || "Failed to convert code to JavaScript.";
+
+        // Handle specific "Not code" error from converter
+        if (
+          err.message ===
+          "Input does not appear to be valid code or pseudocode."
+        ) {
+          return NextResponse.json(
+            {
+              error: "Input is not valid code",
+              details: err.message,
+              detectedLanguage: detectedLanguage,
+            },
+            { status: 400 }
+          );
+        }
+
+        // Handle other conversion errors (e.g., API key missing, OpenAI service error)
+        return NextResponse.json(
+          {
+            error: "Code conversion failed.",
+            details: conversionError,
+            detectedLanguage: detectedLanguage,
+          },
+          { status: 500 } // Use 500 for internal/service errors
+        );
+      }
+    } else {
+      console.log(
+        `Detected language: ${detectedLanguage}. No conversion needed.`
+      );
+      // It's already JS/JSX
     }
 
-    // 3. Proceed with analysis only if JS/JSX
+    // 3. Proceed with analysis using the potentially converted code
     // Try a simple syntax validation before full parsing
     try {
       // Basic syntax check using Function constructor
       // This won't execute the code, just checks syntax
-      new Function(code);
+      new Function(codeToAnalyze);
     } catch (syntaxError) {
+      const errorDetails = conversionRequired
+        ? `Syntax error in code converted from ${detectedLanguage}: ${syntaxError.message}`
+        : `Invalid JavaScript syntax: ${syntaxError.message}`;
       return NextResponse.json(
         {
-          error: "Invalid JavaScript syntax",
-          details: syntaxError.message,
+          error: "Syntax error in code",
+          details: errorDetails,
+          detectedLanguage: detectedLanguage,
+          converted: conversionRequired,
         },
         { status: 400 }
       );
@@ -53,8 +101,11 @@ export async function POST(request) {
     const traverseModule = await import("@babel/traverse");
     const traverse = traverseModule.default;
 
-    // Perform the analysis using the imported helper
-    const analysisResults = analyzeCodeForQuantumPotential(code, traverse);
+    // Perform the analysis using the imported helper and potentially converted code
+    const analysisResults = analyzeCodeForQuantumPotential(
+      codeToAnalyze,
+      traverse
+    );
 
     // Calculate a "quantum advantage score" (mocked for now)
     const score = Math.floor(Math.random() * 100);
@@ -64,27 +115,34 @@ export async function POST(request) {
       quantumAdvantage,
       score,
       detectedLanguage,
+      conversionRequired,
       ...analysisResults,
     });
   } catch (error) {
     console.error("Error analyzing code:", error);
 
-    // Provide more specific error messages based on error type
     if (
       error.name === "SyntaxError" ||
       error.code === "BABEL_PARSER_SYNTAX_ERROR"
     ) {
       return NextResponse.json(
         {
-          error: "Syntax error in submitted code",
+          error: "Syntax error encountered during analysis",
           details: error.message,
         },
         { status: 400 }
       );
     }
 
+    if (error.message.includes("Failed to convert code")) {
+      return NextResponse.json(
+        { error: "Code conversion process failed", details: error.message },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json(
-      { error: "Failed to analyze code" },
+      { error: "Failed to analyze code due to an internal error" },
       { status: 500 }
     );
   }

@@ -49,31 +49,30 @@ function factorialClassical(n) {
 
       if (!response.ok) {
         const errorData = await response.json();
+        console.error("API Error:", errorData);
 
-        // Special handling for language detection errors
-        if (errorData.detectedLanguage) {
-          setResults({
-            score: 0,
-            quantumSpeedupPotential: false,
-            error: `Code analysis requires JavaScript, but detected: ${errorData.detectedLanguage}`,
-            detectedLanguage: errorData.detectedLanguage,
-            isLanguageError: true,
-          });
-          setIsAnalyzing(false);
-          return;
-        }
+        setResults({
+          isApiError: true,
+          errorTitle: errorData.error || "Analysis Failed",
+          errorMessage:
+            errorData.details || `Server responded with ${response.status}`,
+          detectedLanguage: errorData.detectedLanguage,
+        });
 
-        throw new Error(
-          errorData.error || `Server responded with ${response.status}`
-        );
+        setIsAnalyzing(false);
+        return;
       }
 
       const analysisResults = await response.json();
       setResults(analysisResults);
     } catch (error) {
-      console.error("Error analyzing code:", error);
-      // Optionally display an error to the user
-      alert("An error occurred while analyzing the code. Please try again.");
+      console.error("Fetch Error:", error);
+      setResults({
+        isApiError: true,
+        errorTitle: "Network Error",
+        errorMessage:
+          "Could not connect to the analysis service. Please check your network and try again.",
+      });
     } finally {
       setIsAnalyzing(false);
     }
@@ -202,26 +201,29 @@ function factorialClassical(n) {
         <ModalContent className="p-6 quantum-purple-border rounded-lg">
           {results ? (
             <>
-              {/* Display language detection error if present */}
-              {results.isLanguageError ? (
+              {/* Display API Error if present */}
+              {results.isApiError ? (
                 <div className="flex flex-col items-center justify-center py-6">
-                  <div className="w-24 h-24 mb-6 rounded-full bg-black/40 flex items-center justify-center border border-quantum-purple/30">
-                    <span className="text-4xl">⚠️</span>
+                  <div className="w-24 h-24 mb-6 rounded-full bg-black/40 flex items-center justify-center border border-quantum-red/50">
+                    <span className="text-4xl">❗</span>
                   </div>
-                  <h3 className="text-xl font-semibold mb-2 font-quantum text-quantum-light-purple">
-                    Unsupported Language
+                  <h3 className="text-xl font-semibold mb-2 font-quantum text-quantum-red">
+                    {results.errorTitle || "Analysis Error"}
                   </h3>
                   <p className="text-white/70 font-tech mb-4 text-center">
-                    {results.error}
+                    {results.errorMessage}
                   </p>
-                  <div className="inline-flex items-center px-3 py-1 rounded-full bg-black/30 border border-quantum-purple/40 text-yellow-400 text-xs font-medium">
-                    <span className="mr-1">●</span> Detected:{" "}
-                    {results.detectedLanguage}
-                  </div>
+                  {results.detectedLanguage && (
+                    <div className="inline-flex items-center px-3 py-1 rounded-full bg-black/30 border border-quantum-purple/40 text-yellow-400 text-xs font-medium">
+                      <span className="mr-1">●</span> Detected:{" "}
+                      {results.detectedLanguage}
+                    </div>
+                  )}
                 </div>
               ) : (
                 // Existing results display for successful analysis
                 <>
+                  {/* Score Display */}
                   <div className="mb-6">
                     <div className="flex justify-between mb-2">
                       <span className="text-white/70 font-tech">
