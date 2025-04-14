@@ -11,6 +11,21 @@ export async function POST(request) {
       return NextResponse.json({ error: "No code provided" }, { status: 400 });
     }
 
+    // Try a simple syntax validation before full parsing
+    try {
+      // Basic syntax check using Function constructor
+      // This won't execute the code, just checks syntax
+      new Function(code);
+    } catch (syntaxError) {
+      return NextResponse.json(
+        {
+          error: "Invalid JavaScript syntax",
+          details: syntaxError.message,
+        },
+        { status: 400 }
+      );
+    }
+
     // Dynamically import traverse to avoid SSR issues
     const traverseModule = await import("@babel/traverse");
     const traverse = traverseModule.default;
@@ -29,6 +44,21 @@ export async function POST(request) {
     });
   } catch (error) {
     console.error("Error analyzing code:", error);
+
+    // Provide more specific error messages based on error type
+    if (
+      error.name === "SyntaxError" ||
+      error.code === "BABEL_PARSER_SYNTAX_ERROR"
+    ) {
+      return NextResponse.json(
+        {
+          error: "Syntax error in submitted code",
+          details: error.message,
+        },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       { error: "Failed to analyze code" },
       { status: 500 }
@@ -45,6 +75,8 @@ function analyzeCodeForQuantumPotential(code, traverse) {
   let potentialFindings = [];
   let shorPotential = false;
   let shorFindings = [];
+  let qftPotential = false; // QFT: Initialize state
+  let qftFindings = []; // QFT: Initialize findings array
 
   try {
     const ast = parser.parse(code, {
@@ -59,6 +91,19 @@ function analyzeCodeForQuantumPotential(code, traverse) {
         const line = path.node.loc?.start.line || "unknown";
         const lowerName = functionName.toLowerCase();
 
+        // QFT Check 1: Function Name
+        if (
+          lowerName.includes("fourier") ||
+          lowerName.includes("fft") ||
+          lowerName.includes("dft") ||
+          lowerName.includes("qft")
+        ) {
+          if (!qftPotential) qftPotential = true; // Set flag only once if needed
+          qftFindings.push(
+            `Function name suggests Fourier transform: ${functionName} (line ${line})`
+          );
+        }
+
         if (
           lowerName.includes("factor") ||
           lowerName.includes("prime") ||
@@ -72,8 +117,47 @@ function analyzeCodeForQuantumPotential(code, traverse) {
         }
 
         path.traverse({
-          "ForStatement|WhileStatement"(loopPath) {
-            loopPath.traverse({
+          "ForStatement|WhileStatement"(loopPath1) {
+            // Outer loop check
+            let isNestedLoop = false;
+            // QFT Check 2 & 3: Nested Loop and Operation Patterns
+            loopPath1.traverse({
+              "ForStatement|WhileStatement"(loopPath2) {
+                // Inner loop check
+                isNestedLoop = true; // Flag that we found a nested loop
+                loopPath2.traverse({
+                  CallExpression(callPath) {
+                    if (
+                      callPath.node.callee.type === "MemberExpression" &&
+                      callPath.node.callee.object.type === "Identifier" &&
+                      callPath.node.callee.object.name === "Math" &&
+                      ["exp", "cos", "sin"].includes(
+                        callPath.node.callee.property.name
+                      )
+                    ) {
+                      // Check if the argument contains '2 * Math.PI'
+                      // Using toString() is a heuristic; deeper AST analysis could be more robust
+                      const arg = callPath.get("arguments.0");
+                      if (arg) {
+                        const argSource = arg.toString(); // Get source code of the argument
+                        if (argSource.includes("2 * Math.PI")) {
+                          if (!qftPotential) qftPotential = true;
+                          qftFindings.push(
+                            `Potential QFT pattern (nested loop with Math.${
+                              callPath.node.callee.property.name
+                            } using 2*PI) in function: ${functionName} (around line ${
+                              callPath.node.loc?.start.line || "unknown"
+                            })`
+                          );
+                          // Optional: Add more specific checks on the structure of the '2 * Math.PI' multiplication if needed
+                        }
+                      }
+                    }
+                  },
+                });
+              }, // End inner loop visitor
+
+              // --- Existing Shor/Grover Checks (ensure they still run) ---
               IfStatement(ifPath) {
                 const test = ifPath.node.test;
 
@@ -109,7 +193,7 @@ function analyzeCodeForQuantumPotential(code, traverse) {
                       isShorPattern = true;
                       if (!shorPotential) shorPotential = true; // Set flag only once if needed
                       const loopLine =
-                        loopPath.node.loc?.start.line || "unknown";
+                        loopPath1.node.loc?.start.line || "unknown";
                       shorFindings.push(
                         `Potential modulo-based factor check found in function: ${functionName} (around line ${loopLine})`
                       );
@@ -135,6 +219,8 @@ function analyzeCodeForQuantumPotential(code, traverse) {
                 }
               },
             });
+            // Reset nested loop flag if we exit the outer loop (though not strictly needed with current structure)
+            // isNestedLoop = false;
           },
           CallExpression(callPath) {
             if (callPath.node.callee && callPath.node.callee.property) {
@@ -154,9 +240,13 @@ function analyzeCodeForQuantumPotential(code, traverse) {
     });
   } catch (error) {
     console.error("AST Parsing/Traversal Error:", error);
+    // Instead of swallowing the error, we'll throw it to be handled by the caller
+    // This allows proper error response to be sent to the client
+    throw error;
   }
 
-  quantumSpeedupPotential = groverPotential || shorPotential;
+  // Update overall potential based on all algorithm checks
+  quantumSpeedupPotential = groverPotential || shorPotential || qftPotential;
 
   return {
     quantumSpeedupPotential,
@@ -164,5 +254,7 @@ function analyzeCodeForQuantumPotential(code, traverse) {
     potentialFindings,
     shorPotential,
     shorFindings,
+    qftPotential, // QFT: Return results
+    qftFindings, // QFT: Return results
   };
 }

@@ -112,11 +112,27 @@ function factorialClassical(n) {
             <span className="quantum-glow text-quantum-cyan">Advantage</span>{" "}
             Assessment
           </h2>
-          <p className="text-center text-white/70 mb-10 max-w-3xl mx-auto font-tech">
+          <p className="text-center text-white/70 mb-4 max-w-3xl mx-auto font-tech">
             Paste your code below to analyze its potential for quantum
             optimization. Our tool will assess if quantum computing could
             provide significant performance advantages.
           </p>
+
+          {/* Algorithm Support Tags */}
+          <h3 className="text-center text-white/80 font-quantum text-sm mb-3">
+            Currently supports checks for:
+          </h3>
+          <div className="flex justify-center gap-2 mb-6">
+            <div className="inline-flex items-center px-3 py-1 rounded-full bg-black/30 border border-quantum-purple/40 text-green-400 text-xs font-medium">
+              <span className="mr-1">●</span> Grover's Algorithm
+            </div>
+            <div className="inline-flex items-center px-3 py-1 rounded-full bg-black/30 border border-quantum-purple/40 text-pink-400 text-xs font-medium">
+              <span className="mr-1">●</span> Shor's Algorithm
+            </div>
+            <div className="inline-flex items-center px-3 py-1 rounded-full bg-black/30 border border-quantum-purple/40 text-blue-400 text-xs font-medium">
+              <span className="mr-1">●</span> Quantum Fourier Transform
+            </div>
+          </div>
 
           <div className="max-w-4xl mx-auto">
             <div className="relative p-4 bg-black/20 quantum-purple-border rounded-lg">
@@ -211,8 +227,7 @@ function factorialClassical(n) {
                       <p>
                         <span className="font-bold">Potential Found:</span>{" "}
                         Analysis suggests parts of this code might benefit from
-                        Grover's or Shor's quantum algorithms for a
-                        computational speedup.
+                        quantum algorithms for a computational speedup.
                       </p>
                     </div>
 
@@ -266,6 +281,32 @@ function factorialClassical(n) {
                                       <li key={index}>{finding}</li>
                                     )
                                   )}
+                                </ul>
+                              </div>
+                            )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* QFT Algorithm Subsection */}
+                    {results.qftPotential && (
+                      <div className="ml-2 mt-3 pt-3 border-t border-quantum-purple/10">
+                        <h5 className="text-md font-semibold mb-2 font-quantum text-quantum-light-purple">
+                          Quantum Fourier Transform (QFT)
+                        </h5>
+                        <div className="text-quantum-cyan/90 font-tech space-y-2">
+                          <p>
+                            This code contains patterns that might be
+                            accelerated using the Quantum Fourier Transform.
+                          </p>
+                          {results.qftFindings &&
+                            results.qftFindings.length > 0 && (
+                              <div>
+                                <p className="font-medium">Specific areas:</p>
+                                <ul className="list-disc list-inside text-sm space-y-1 ml-4">
+                                  {results.qftFindings.map((finding, index) => (
+                                    <li key={index}>{finding}</li>
+                                  ))}
                                 </ul>
                               </div>
                             )}
