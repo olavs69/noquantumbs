@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@babel/parser": "^7.27.0",
+    "@babel/traverse": "^7.27.0",
     "@radix-ui/react-slot": "^1.2.0",
     "@shadcn/ui": "^0.0.4",
     "@tsparticles/engine": "^3.8.1",

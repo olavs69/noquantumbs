@@ -29,31 +29,37 @@ function factorialClassical(n) {
 // This could be optimized with quantum computing
 // for large numbers using Quantum Fourier Transform`;
 
-  const analyzeCode = () => {
+  const analyzeCode = async () => {
     if (!code.trim()) {
       alert("Please enter some code first.");
       return;
     }
 
-    // Simulate analysis process
     setIsAnalyzing(true);
     setResults(null);
 
-    // Mock analysis with timeout to simulate processing
-    setTimeout(() => {
-      // Calculate a "quantum advantage score"
-      let score = Math.floor(Math.random() * 100);
-
-      // Determine if there's quantum advantage
-      const quantumAdvantage = score > 50;
-
-      setResults({
-        quantumAdvantage,
-        score,
+    try {
+      const response = await fetch("/api/code-analysis", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ code }),
       });
 
+      if (!response.ok) {
+        throw new Error(`Server responded with ${response.status}`);
+      }
+
+      const analysisResults = await response.json();
+      setResults(analysisResults);
+    } catch (error) {
+      console.error("Error analyzing code:", error);
+      // Optionally display an error to the user
+      alert("An error occurred while analyzing the code. Please try again.");
+    } finally {
       setIsAnalyzing(false);
-    }, 2000);
+    }
   };
 
   const AnalysisButton = () => {
@@ -192,6 +198,58 @@ function factorialClassical(n) {
                     style={{ width: `${results.score}%` }}
                   ></div>
                 </div>
+              </div>
+
+              {/* Quantum Speedup Analysis Section */}
+              <div className="mt-6 pt-6 border-t border-quantum-purple/20">
+                <h4 className="text-lg font-semibold mb-3 font-quantum text-quantum-light-purple">
+                  Quantum Speedup Analysis
+                </h4>
+                {results.quantumSpeedupPotential ? (
+                  <div className="space-y-4">
+                    <div className="text-quantum-cyan/90 font-tech space-y-2">
+                      <p>
+                        <span className="font-bold">Potential Found:</span>{" "}
+                        Analysis suggests parts of this code might benefit from
+                        quantum algorithms for a computational speedup.
+                      </p>
+                    </div>
+
+                    {/* Grover's Algorithm Subsection */}
+                    {results.groverPotential && (
+                      <div className="ml-2 mt-3 pt-3 border-t border-quantum-purple/10">
+                        <h5 className="text-md font-semibold mb-2 font-quantum text-quantum-light-purple">
+                          Grover's Algorithm
+                        </h5>
+                        <div className="text-quantum-cyan/90 font-tech space-y-2">
+                          <p>
+                            This code contains search patterns that could
+                            benefit from Grover's search algorithm for a quantum
+                            speedup.
+                          </p>
+                          {results.potentialFindings &&
+                            results.potentialFindings.length > 0 && (
+                              <div>
+                                <p className="font-medium">Specific areas:</p>
+                                <ul className="list-disc list-inside text-sm space-y-1 ml-4">
+                                  {results.potentialFindings.map(
+                                    (finding, index) => (
+                                      <li key={index}>{finding}</li>
+                                    )
+                                  )}
+                                </ul>
+                              </div>
+                            )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-white/70 font-tech">
+                    No potential for quantum speedup was detected in the
+                    analyzed code based on the current heuristics.
+                  </p>
+                )}
               </div>
             </>
           ) : (
