@@ -48,7 +48,24 @@ function factorialClassical(n) {
       });
 
       if (!response.ok) {
-        throw new Error(`Server responded with ${response.status}`);
+        const errorData = await response.json();
+
+        // Special handling for language detection errors
+        if (errorData.detectedLanguage) {
+          setResults({
+            score: 0,
+            quantumSpeedupPotential: false,
+            error: `Code analysis requires JavaScript, but detected: ${errorData.detectedLanguage}`,
+            detectedLanguage: errorData.detectedLanguage,
+            isLanguageError: true,
+          });
+          setIsAnalyzing(false);
+          return;
+        }
+
+        throw new Error(
+          errorData.error || `Server responded with ${response.status}`
+        );
       }
 
       const analysisResults = await response.json();
@@ -185,142 +202,173 @@ function factorialClassical(n) {
         <ModalContent className="p-6 quantum-purple-border rounded-lg">
           {results ? (
             <>
-              <div className="mb-6">
-                <div className="flex justify-between mb-2">
-                  <span className="text-white/70 font-tech">
-                    Quantum Advantage Score
-                  </span>
-                  <span
-                    className={`font-bold ${
-                      results.score > 70
-                        ? "text-quantum-cyan"
-                        : results.score > 40
-                        ? "text-quantum-purple"
-                        : "text-gray-400"
-                    }`}
-                  >
-                    {results.score}%
-                  </span>
+              {/* Display language detection error if present */}
+              {results.isLanguageError ? (
+                <div className="flex flex-col items-center justify-center py-6">
+                  <div className="w-24 h-24 mb-6 rounded-full bg-black/40 flex items-center justify-center border border-quantum-purple/30">
+                    <span className="text-4xl">⚠️</span>
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2 font-quantum text-quantum-light-purple">
+                    Unsupported Language
+                  </h3>
+                  <p className="text-white/70 font-tech mb-4 text-center">
+                    {results.error}
+                  </p>
+                  <div className="inline-flex items-center px-3 py-1 rounded-full bg-black/30 border border-quantum-purple/40 text-yellow-400 text-xs font-medium">
+                    <span className="mr-1">●</span> Detected:{" "}
+                    {results.detectedLanguage}
+                  </div>
                 </div>
-                <div className="w-full bg-black/50 h-2 rounded-full">
-                  <div
-                    className={`h-full rounded-full ${
-                      results.score > 70
-                        ? "bg-quantum-blue"
-                        : results.score > 40
-                        ? "bg-quantum-purple"
-                        : "bg-gray-400"
-                    }`}
-                    style={{ width: `${results.score}%` }}
-                  ></div>
-                </div>
-              </div>
-
-              {/* Quantum Speedup Analysis Section */}
-              <div className="mt-6 pt-6 border-t border-quantum-purple/20">
-                <h4 className="text-lg font-semibold mb-3 font-quantum text-quantum-light-purple">
-                  Quantum Speedup Analysis
-                </h4>
-                {results.quantumSpeedupPotential ? (
-                  <div className="space-y-4">
-                    <div className="text-quantum-cyan/90 font-tech space-y-2">
-                      <p>
-                        <span className="font-bold">Potential Found:</span>{" "}
-                        Analysis suggests parts of this code might benefit from
-                        quantum algorithms for a computational speedup.
-                      </p>
+              ) : (
+                // Existing results display for successful analysis
+                <>
+                  <div className="mb-6">
+                    <div className="flex justify-between mb-2">
+                      <span className="text-white/70 font-tech">
+                        Quantum Advantage Score
+                      </span>
+                      <span
+                        className={`font-bold ${
+                          results.score > 70
+                            ? "text-quantum-cyan"
+                            : results.score > 40
+                            ? "text-quantum-purple"
+                            : "text-gray-400"
+                        }`}
+                      >
+                        {results.score}%
+                      </span>
                     </div>
+                    <div className="w-full bg-black/50 h-2 rounded-full">
+                      <div
+                        className={`h-full rounded-full ${
+                          results.score > 70
+                            ? "bg-quantum-blue"
+                            : results.score > 40
+                            ? "bg-quantum-purple"
+                            : "bg-gray-400"
+                        }`}
+                        style={{ width: `${results.score}%` }}
+                      ></div>
+                    </div>
+                  </div>
 
-                    {/* Grover's Algorithm Subsection */}
-                    {results.groverPotential && (
-                      <div className="ml-2 mt-3 pt-3 border-t border-quantum-purple/10">
-                        <h5 className="text-md font-semibold mb-2 font-quantum text-quantum-light-purple">
-                          Grover's Algorithm (Search)
-                        </h5>
+                  {/* Quantum Speedup Analysis Section */}
+                  <div className="mt-6 pt-6 border-t border-quantum-purple/20">
+                    <h4 className="text-lg font-semibold mb-3 font-quantum text-quantum-light-purple">
+                      Quantum Speedup Analysis
+                    </h4>
+                    {results.quantumSpeedupPotential ? (
+                      <div className="space-y-4">
                         <div className="text-quantum-cyan/90 font-tech space-y-2">
                           <p>
-                            This code contains search patterns that could
-                            potentially benefit from Grover's search algorithm.
+                            <span className="font-bold">Potential Found:</span>{" "}
+                            Analysis suggests parts of this code might benefit
+                            from quantum algorithms for a computational speedup.
                           </p>
-                          {results.potentialFindings &&
-                            results.potentialFindings.length > 0 && (
-                              <div>
-                                <p className="font-medium">Specific areas:</p>
-                                <ul className="list-disc list-inside text-sm space-y-1 ml-4">
-                                  {results.potentialFindings.map(
-                                    (finding, index) => (
-                                      <li key={index}>{finding}</li>
-                                    )
-                                  )}
-                                </ul>
-                              </div>
-                            )}
                         </div>
-                      </div>
-                    )}
 
-                    {/* Shor's Algorithm Subsection */}
-                    {results.shorPotential && (
-                      <div className="ml-2 mt-3 pt-3 border-t border-quantum-purple/10">
-                        <h5 className="text-md font-semibold mb-2 font-quantum text-quantum-light-purple">
-                          Shor's Algorithm (Factoring/Period Finding)
-                        </h5>
-                        <div className="text-quantum-cyan/90 font-tech space-y-2">
-                          <p>
-                            This code contains patterns related to integer
-                            factorization or primality testing that could
-                            potentially benefit from Shor's algorithm.
-                          </p>
-                          {results.shorFindings &&
-                            results.shorFindings.length > 0 && (
-                              <div>
-                                <p className="font-medium">Specific areas:</p>
-                                <ul className="list-disc list-inside text-sm space-y-1 ml-4">
-                                  {results.shorFindings.map(
-                                    (finding, index) => (
-                                      <li key={index}>{finding}</li>
-                                    )
-                                  )}
-                                </ul>
-                              </div>
-                            )}
-                        </div>
-                      </div>
-                    )}
+                        {/* Grover's Algorithm Subsection */}
+                        {results.groverPotential && (
+                          <div className="ml-2 mt-3 pt-3 border-t border-quantum-purple/10">
+                            <h5 className="text-md font-semibold mb-2 font-quantum text-quantum-light-purple">
+                              Grover's Algorithm (Search)
+                            </h5>
+                            <div className="text-quantum-cyan/90 font-tech space-y-2">
+                              <p>
+                                This code contains search patterns that could
+                                potentially benefit from Grover's search
+                                algorithm.
+                              </p>
+                              {results.potentialFindings &&
+                                results.potentialFindings.length > 0 && (
+                                  <div>
+                                    <p className="font-medium">
+                                      Specific areas:
+                                    </p>
+                                    <ul className="list-disc list-inside text-sm space-y-1 ml-4">
+                                      {results.potentialFindings.map(
+                                        (finding, index) => (
+                                          <li key={index}>{finding}</li>
+                                        )
+                                      )}
+                                    </ul>
+                                  </div>
+                                )}
+                            </div>
+                          </div>
+                        )}
 
-                    {/* QFT Algorithm Subsection */}
-                    {results.qftPotential && (
-                      <div className="ml-2 mt-3 pt-3 border-t border-quantum-purple/10">
-                        <h5 className="text-md font-semibold mb-2 font-quantum text-quantum-light-purple">
-                          Quantum Fourier Transform (QFT)
-                        </h5>
-                        <div className="text-quantum-cyan/90 font-tech space-y-2">
-                          <p>
-                            This code contains patterns that might be
-                            accelerated using the Quantum Fourier Transform.
-                          </p>
-                          {results.qftFindings &&
-                            results.qftFindings.length > 0 && (
-                              <div>
-                                <p className="font-medium">Specific areas:</p>
-                                <ul className="list-disc list-inside text-sm space-y-1 ml-4">
-                                  {results.qftFindings.map((finding, index) => (
-                                    <li key={index}>{finding}</li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
-                        </div>
+                        {/* Shor's Algorithm Subsection */}
+                        {results.shorPotential && (
+                          <div className="ml-2 mt-3 pt-3 border-t border-quantum-purple/10">
+                            <h5 className="text-md font-semibold mb-2 font-quantum text-quantum-light-purple">
+                              Shor's Algorithm (Factoring/Period Finding)
+                            </h5>
+                            <div className="text-quantum-cyan/90 font-tech space-y-2">
+                              <p>
+                                This code contains patterns related to integer
+                                factorization or primality testing that could
+                                potentially benefit from Shor's algorithm.
+                              </p>
+                              {results.shorFindings &&
+                                results.shorFindings.length > 0 && (
+                                  <div>
+                                    <p className="font-medium">
+                                      Specific areas:
+                                    </p>
+                                    <ul className="list-disc list-inside text-sm space-y-1 ml-4">
+                                      {results.shorFindings.map(
+                                        (finding, index) => (
+                                          <li key={index}>{finding}</li>
+                                        )
+                                      )}
+                                    </ul>
+                                  </div>
+                                )}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* QFT Algorithm Subsection */}
+                        {results.qftPotential && (
+                          <div className="ml-2 mt-3 pt-3 border-t border-quantum-purple/10">
+                            <h5 className="text-md font-semibold mb-2 font-quantum text-quantum-light-purple">
+                              Quantum Fourier Transform (QFT)
+                            </h5>
+                            <div className="text-quantum-cyan/90 font-tech space-y-2">
+                              <p>
+                                This code contains patterns that might be
+                                accelerated using the Quantum Fourier Transform.
+                              </p>
+                              {results.qftFindings &&
+                                results.qftFindings.length > 0 && (
+                                  <div>
+                                    <p className="font-medium">
+                                      Specific areas:
+                                    </p>
+                                    <ul className="list-disc list-inside text-sm space-y-1 ml-4">
+                                      {results.qftFindings.map(
+                                        (finding, index) => (
+                                          <li key={index}>{finding}</li>
+                                        )
+                                      )}
+                                    </ul>
+                                  </div>
+                                )}
+                            </div>
+                          </div>
+                        )}
                       </div>
+                    ) : (
+                      <p className="text-white/70 font-tech">
+                        No potential for quantum speedup was detected in the
+                        analyzed code based on the current heuristics.
+                      </p>
                     )}
                   </div>
-                ) : (
-                  <p className="text-white/70 font-tech">
-                    No potential for quantum speedup was detected in the
-                    analyzed code based on the current heuristics.
-                  </p>
-                )}
-              </div>
+                </>
+              )}
             </>
           ) : (
             <div className="flex flex-col items-center justify-center text-center">
