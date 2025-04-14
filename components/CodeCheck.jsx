@@ -211,7 +211,8 @@ function factorialClassical(n) {
                       <p>
                         <span className="font-bold">Potential Found:</span>{" "}
                         Analysis suggests parts of this code might benefit from
-                        quantum algorithms for a computational speedup.
+                        Grover's or Shor's quantum algorithms for a
+                        computational speedup.
                       </p>
                     </div>
 
@@ -219,13 +220,12 @@ function factorialClassical(n) {
                     {results.groverPotential && (
                       <div className="ml-2 mt-3 pt-3 border-t border-quantum-purple/10">
                         <h5 className="text-md font-semibold mb-2 font-quantum text-quantum-light-purple">
-                          Grover's Algorithm
+                          Grover's Algorithm (Search)
                         </h5>
                         <div className="text-quantum-cyan/90 font-tech space-y-2">
                           <p>
                             This code contains search patterns that could
-                            benefit from Grover's search algorithm for a quantum
-                            speedup.
+                            potentially benefit from Grover's search algorithm.
                           </p>
                           {results.potentialFindings &&
                             results.potentialFindings.length > 0 && (
@@ -233,6 +233,35 @@ function factorialClassical(n) {
                                 <p className="font-medium">Specific areas:</p>
                                 <ul className="list-disc list-inside text-sm space-y-1 ml-4">
                                   {results.potentialFindings.map(
+                                    (finding, index) => (
+                                      <li key={index}>{finding}</li>
+                                    )
+                                  )}
+                                </ul>
+                              </div>
+                            )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Shor's Algorithm Subsection */}
+                    {results.shorPotential && (
+                      <div className="ml-2 mt-3 pt-3 border-t border-quantum-purple/10">
+                        <h5 className="text-md font-semibold mb-2 font-quantum text-quantum-light-purple">
+                          Shor's Algorithm (Factoring/Period Finding)
+                        </h5>
+                        <div className="text-quantum-cyan/90 font-tech space-y-2">
+                          <p>
+                            This code contains patterns related to integer
+                            factorization or primality testing that could
+                            potentially benefit from Shor's algorithm.
+                          </p>
+                          {results.shorFindings &&
+                            results.shorFindings.length > 0 && (
+                              <div>
+                                <p className="font-medium">Specific areas:</p>
+                                <ul className="list-disc list-inside text-sm space-y-1 ml-4">
+                                  {results.shorFindings.map(
                                     (finding, index) => (
                                       <li key={index}>{finding}</li>
                                     )
