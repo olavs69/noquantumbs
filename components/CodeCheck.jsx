@@ -1,21 +1,23 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Code, Scan } from "lucide-react";
 import { SparklesCore } from "@/components/ui/sparkles";
 import {
-  Modal,
   ModalBody,
   ModalContent,
   useModal,
 } from "@/components/ui/animated-modal";
+import { useRouter } from "next/navigation";
 
 const CodeCheck = () => {
   const [code, setCode] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [results, setResults] = useState(null);
+  const { open, setOpen } = useModal();
+  const router = useRouter();
 
   const placeholderCode = `// Paste your code here or use this example
 function factorialClassical(n) {
@@ -29,16 +31,32 @@ function factorialClassical(n) {
 // This could be optimized with quantum computing
 // for large numbers using Quantum Fourier Transform`;
 
+  // Reset the results when modal is closed
+  useEffect(() => {
+    if (!open) {
+      // Small delay to avoid flickering
+      const timer = setTimeout(() => {
+        if (!isAnalyzing) {
+          setResults(null);
+        }
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [open, isAnalyzing]);
+
   const analyzeCode = async () => {
     if (!code.trim()) {
       alert("Please enter some code first.");
       return;
     }
 
+    // First set analyzing state and open the modal
     setIsAnalyzing(true);
     setResults(null);
+    setOpen(true);
 
     try {
+      // Then perform the API call
       const response = await fetch("/api/code-analysis", {
         method: "POST",
         headers: {
@@ -64,7 +82,23 @@ function factorialClassical(n) {
       }
 
       const analysisResults = await response.json();
+
+      // Set results
       setResults(analysisResults);
+
+      // If quantum speedup is possible, redirect to the detailed results page
+      if (analysisResults.quantumSpeedupPotential) {
+        // Store results in sessionStorage for the results page
+        sessionStorage.setItem(
+          "quantumAnalysisResults",
+          JSON.stringify(analysisResults)
+        );
+
+        // Immediately redirect without closing the modal first
+        router.push("/quantum-results");
+        // Don't close the modal - let the navigation handle it naturally
+        // The modal will automatically unmount when navigating away
+      }
     } catch (error) {
       console.error("Fetch Error:", error);
       setResults({
@@ -78,28 +112,8 @@ function factorialClassical(n) {
     }
   };
 
-  const AnalysisButton = () => {
-    const { setOpen } = useModal();
-
-    const handleClick = () => {
-      analyzeCode();
-      setOpen(true);
-    };
-
-    return (
-      <Button
-        onClick={handleClick}
-        disabled={!code.trim()}
-        className="bg-gradient-to-r from-quantum-purple to-quantum-blue hover:from-quantum-bright-purple hover:to-quantum-cyan text-white font-medium font-quantum transition-all duration-300"
-      >
-        <Scan className="w-4 h-4 mr-2" />
-        Analyze Quantum Potential
-      </Button>
-    );
-  };
-
   return (
-    <Modal>
+    <>
       <div
         id="quantum-assessment"
         className="py-16 px-4 relative overflow-hidden"
@@ -140,10 +154,10 @@ function factorialClassical(n) {
           </h3>
           <div className="flex justify-center gap-2 mb-6">
             <div className="inline-flex items-center px-3 py-1 rounded-full bg-black/30 border border-quantum-purple/40 text-green-400 text-xs font-medium">
-              <span className="mr-1">●</span> Grover's Algorithm
+              <span className="mr-1">●</span> Grover&apos;s Algorithm
             </div>
             <div className="inline-flex items-center px-3 py-1 rounded-full bg-black/30 border border-quantum-purple/40 text-pink-400 text-xs font-medium">
-              <span className="mr-1">●</span> Shor's Algorithm
+              <span className="mr-1">●</span> Shor&apos;s Algorithm
             </div>
             <div className="inline-flex items-center px-3 py-1 rounded-full bg-black/30 border border-quantum-purple/40 text-blue-400 text-xs font-medium">
               <span className="mr-1">●</span> Quantum Fourier Transform
@@ -188,7 +202,14 @@ function factorialClassical(n) {
                     </div>
                   </Button>
                 ) : (
-                  <AnalysisButton />
+                  <Button
+                    onClick={analyzeCode}
+                    disabled={!code.trim()}
+                    className="bg-gradient-to-r from-quantum-purple to-quantum-blue hover:from-quantum-bright-purple hover:to-quantum-cyan text-white font-medium font-quantum transition-all duration-300"
+                  >
+                    <Scan className="w-4 h-4 mr-2" />
+                    Analyze Quantum Potential
+                  </Button>
                 )}
               </div>
             </div>
@@ -196,10 +217,29 @@ function factorialClassical(n) {
         </div>
       </div>
 
-      {/* Results Modal */}
+      {/* Results Modal - Only shown for errors or no quantum potential */}
       <ModalBody className="max-w-2xl w-full bg-black/90 border-quantum-purple">
         <ModalContent className="p-6 quantum-purple-border rounded-lg">
-          {results ? (
+          {!results && isAnalyzing ? (
+            // Initial loading state
+            <div className="flex flex-col items-center justify-center text-center">
+              <div className="w-24 h-24 mb-6 rounded-full bg-black/40 flex items-center justify-center border border-quantum-purple/30">
+                <div className="w-16 h-16 relative">
+                  <div className="absolute inset-0 border-2 border-t-transparent border-quantum-purple rounded-full animate-spin"></div>
+                  <div
+                    className="absolute inset-3 border border-t-transparent border-quantum-blue rounded-full animate-spin"
+                    style={{ animationDuration: "3s" }}
+                  ></div>
+                </div>
+              </div>
+              <h3 className="text-xl font-semibold mb-2 font-quantum text-quantum-light-purple">
+                Quantum Analysis Results
+              </h3>
+              <p className="text-white/70 font-tech">
+                Processing your code through our quantum potential analyzer...
+              </p>
+            </div>
+          ) : results ? (
             <>
               {/* Display API Error if present */}
               {results.isApiError ? (
@@ -220,180 +260,65 @@ function factorialClassical(n) {
                     </div>
                   )}
                 </div>
-              ) : (
-                // Existing results display for successful analysis
-                <>
-                  {/* Score Display */}
-                  <div className="mb-6">
-                    <div className="flex justify-between mb-2">
-                      <span className="text-white/70 font-tech">
-                        Quantum Advantage Score
-                      </span>
-                      <span
-                        className={`font-bold ${
-                          results.score > 70
-                            ? "text-quantum-cyan"
-                            : results.score > 40
-                            ? "text-quantum-purple"
-                            : "text-gray-400"
-                        }`}
-                      >
-                        {results.score}%
-                      </span>
+              ) : results.quantumSpeedupPotential ? (
+                // For potential quantum speedup, show a transition/loading state
+                <div className="flex flex-col items-center justify-center py-6 text-center">
+                  <div className="w-24 h-24 mb-4 rounded-full bg-black/40 flex items-center justify-center border border-quantum-cyan/50">
+                    <div className="w-16 h-16 relative">
+                      <div className="absolute inset-0 border-2 border-t-transparent border-quantum-cyan rounded-full animate-spin"></div>
                     </div>
-                    <div className="w-full bg-black/50 h-2 rounded-full">
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2 font-quantum text-quantum-cyan">
+                    Quantum Potential Detected!
+                  </h3>
+                  <p className="text-white/70 font-tech mb-6">
+                    Redirecting to detailed analysis...
+                  </p>
+                  <div className="flex items-center justify-center space-x-1 text-quantum-light-purple">
+                    <span>Loading</span>
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 bg-quantum-light-purple rounded-full animate-pulse"></div>
                       <div
-                        className={`h-full rounded-full ${
-                          results.score > 70
-                            ? "bg-quantum-blue"
-                            : results.score > 40
-                            ? "bg-quantum-purple"
-                            : "bg-gray-400"
-                        }`}
-                        style={{ width: `${results.score}%` }}
+                        className="w-2 h-2 bg-quantum-light-purple rounded-full animate-pulse"
+                        style={{ animationDelay: "0.2s" }}
+                      ></div>
+                      <div
+                        className="w-2 h-2 bg-quantum-light-purple rounded-full animate-pulse"
+                        style={{ animationDelay: "0.4s" }}
                       ></div>
                     </div>
                   </div>
-
-                  {/* Quantum Speedup Analysis Section */}
-                  <div className="mt-6 pt-6 border-t border-quantum-purple/20">
-                    <h4 className="text-lg font-semibold mb-3 font-quantum text-quantum-light-purple">
-                      Quantum Speedup Analysis
-                    </h4>
-                    {results.quantumSpeedupPotential ? (
-                      <div className="space-y-4">
-                        <div className="text-quantum-cyan/90 font-tech space-y-2">
-                          <p>
-                            <span className="font-bold">Potential Found:</span>{" "}
-                            Analysis suggests parts of this code might benefit
-                            from quantum algorithms for a computational speedup.
-                          </p>
-                        </div>
-
-                        {/* Grover's Algorithm Subsection */}
-                        {results.groverPotential && (
-                          <div className="ml-2 mt-3 pt-3 border-t border-quantum-purple/10">
-                            <h5 className="text-md font-semibold mb-2 font-quantum text-quantum-light-purple">
-                              Grover's Algorithm (Search)
-                            </h5>
-                            <div className="text-quantum-cyan/90 font-tech space-y-2">
-                              <p>
-                                This code contains search patterns that could
-                                potentially benefit from Grover's search
-                                algorithm.
-                              </p>
-                              {results.potentialFindings &&
-                                results.potentialFindings.length > 0 && (
-                                  <div>
-                                    <p className="font-medium">
-                                      Specific areas:
-                                    </p>
-                                    <ul className="list-disc list-inside text-sm space-y-1 ml-4">
-                                      {results.potentialFindings.map(
-                                        (finding, index) => (
-                                          <li key={index}>{finding}</li>
-                                        )
-                                      )}
-                                    </ul>
-                                  </div>
-                                )}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Shor's Algorithm Subsection */}
-                        {results.shorPotential && (
-                          <div className="ml-2 mt-3 pt-3 border-t border-quantum-purple/10">
-                            <h5 className="text-md font-semibold mb-2 font-quantum text-quantum-light-purple">
-                              Shor's Algorithm (Factoring/Period Finding)
-                            </h5>
-                            <div className="text-quantum-cyan/90 font-tech space-y-2">
-                              <p>
-                                This code contains patterns related to integer
-                                factorization or primality testing that could
-                                potentially benefit from Shor's algorithm.
-                              </p>
-                              {results.shorFindings &&
-                                results.shorFindings.length > 0 && (
-                                  <div>
-                                    <p className="font-medium">
-                                      Specific areas:
-                                    </p>
-                                    <ul className="list-disc list-inside text-sm space-y-1 ml-4">
-                                      {results.shorFindings.map(
-                                        (finding, index) => (
-                                          <li key={index}>{finding}</li>
-                                        )
-                                      )}
-                                    </ul>
-                                  </div>
-                                )}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* QFT Algorithm Subsection */}
-                        {results.qftPotential && (
-                          <div className="ml-2 mt-3 pt-3 border-t border-quantum-purple/10">
-                            <h5 className="text-md font-semibold mb-2 font-quantum text-quantum-light-purple">
-                              Quantum Fourier Transform (QFT)
-                            </h5>
-                            <div className="text-quantum-cyan/90 font-tech space-y-2">
-                              <p>
-                                This code contains patterns that might be
-                                accelerated using the Quantum Fourier Transform.
-                              </p>
-                              {results.qftFindings &&
-                                results.qftFindings.length > 0 && (
-                                  <div>
-                                    <p className="font-medium">
-                                      Specific areas:
-                                    </p>
-                                    <ul className="list-disc list-inside text-sm space-y-1 ml-4">
-                                      {results.qftFindings.map(
-                                        (finding, index) => (
-                                          <li key={index}>{finding}</li>
-                                        )
-                                      )}
-                                    </ul>
-                                  </div>
-                                )}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <p className="text-white/70 font-tech">
-                        No potential for quantum speedup was detected in the
-                        analyzed code based on the current heuristics.
-                      </p>
-                    )}
+                </div>
+              ) : (
+                // No quantum potential found
+                <div className="flex flex-col">
+                  {/* No Speedup Message */}
+                  <div className="py-6 text-center">
+                    <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-black/40 flex items-center justify-center border border-gray-500/50">
+                      <span className="text-4xl">🔍</span>
+                    </div>
+                    <h3 className="text-xl font-semibold mb-4 font-quantum text-white/80">
+                      No Quantum Advantage Found
+                    </h3>
+                    <p className="text-white/70 font-tech mb-6 max-w-lg mx-auto">
+                      Our analysis couldn&apos;t detect any patterns in your
+                      code that would benefit from quantum computing algorithms
+                      based on our current heuristics.
+                    </p>
+                    <Button
+                      onClick={() => setOpen(false)}
+                      className="bg-black/40 hover:bg-black/50 border border-quantum-purple/30 text-white font-medium transition-all duration-300"
+                    >
+                      Back to Editor
+                    </Button>
                   </div>
-                </>
+                </div>
               )}
             </>
-          ) : (
-            <div className="flex flex-col items-center justify-center text-center">
-              <div className="w-24 h-24 mb-6 rounded-full bg-black/40 flex items-center justify-center border border-quantum-purple/30">
-                <div className="w-16 h-16 relative">
-                  <div className="absolute inset-0 border-2 border-t-transparent border-quantum-purple rounded-full animate-spin"></div>
-                  <div
-                    className="absolute inset-3 border border-t-transparent border-quantum-blue rounded-full animate-spin"
-                    style={{ animationDuration: "3s" }}
-                  ></div>
-                </div>
-              </div>
-              <h3 className="text-xl font-semibold mb-2 font-quantum text-quantum-light-purple">
-                Quantum Analysis Results
-              </h3>
-              <p className="text-white/70 font-tech">
-                Processing your code through our quantum potential analyzer...
-              </p>
-            </div>
-          )}
+          ) : null}
         </ModalContent>
       </ModalBody>
-    </Modal>
+    </>
   );
 };
 

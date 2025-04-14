@@ -7,6 +7,8 @@ import Hero from "@/components/Hero";
 import CallToAction from "@/components/CallToAction";
 import { initScrollReveal } from "@/utils/scrollAnimation";
 import CodeCheck from "@/components/CodeCheck";
+import { ModalProvider } from "@/components/ui/animated-modal";
+
 export default function Home() {
   useEffect(() => {
     // Initialize scroll reveal animations
@@ -19,7 +21,9 @@ export default function Home() {
     <div className="min-h-screen bg-quantum-dark text-white overflow-x-hidden">
       <Navbar />
       <Hero />
-      <CodeCheck />
+      <ModalProvider>
+        <CodeCheck />
+      </ModalProvider>
       {/*   <Applications /> */}
       <CallToAction />
     </div>

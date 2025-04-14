@@ -1,0 +1,17 @@
+{
+  "Quantinuum": {
+    "pricePerShot": 0.01,
+    "pricePerQubit": 0.001,
+    "pricePerGate": 0.0005
+  },
+  "IonQ Aria": {
+    "pricePerShot": 0.03,
+    "pricePerQubit": 0.002,
+    "pricePerGate": 0.001
+  },
+  "Rigetti Ankaa": {
+    "pricePerShot": 0.015,
+    "pricePerQubit": 0.0015,
+    "pricePerGate": 0.0008
+  }
+}

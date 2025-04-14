@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { detectLanguage } from "@/lib/language-detection";
 import { analyzeCodeForQuantumPotential } from "@/lib/quantum-analysis";
 import { convertToJavaScript } from "@/lib/code-translator";
+import { estimateQuantumSavings } from "@/utils/costEstimator";
 
 export async function POST(request) {
   try {
@@ -107,6 +108,39 @@ export async function POST(request) {
       traverse
     );
 
+    // Calculate cost estimates for potential algorithms
+    const costEstimates = [];
+    const defaultProblemSize = 1000000; // Use a larger, more realistic default N
+    const defaultProvider = "Quantinuum"; // Example default provider
+    const detectedAlgos = [];
+
+    if (analysisResults.groverPotential) detectedAlgos.push("Grover");
+    if (analysisResults.shorPotential) detectedAlgos.push("Shor");
+    if (analysisResults.qftPotential) detectedAlgos.push("QFT");
+
+    try {
+      // If any algorithms are detected, calculate a single combined estimate
+      if (detectedAlgos.length > 0) {
+        const combinedEstimate = estimateQuantumSavings({
+          algorithm: detectedAlgos, // Pass the array of detected algorithms
+          n: defaultProblemSize,
+          provider: defaultProvider,
+          shots: 1000, // Example: Increase shots for potentially complex combined runs
+          overheadMultiplier: 1.8, // Example: Slightly higher overhead for combined potential
+        });
+        // Store the single combined estimate
+        costEstimates.push(combinedEstimate);
+      } else {
+        // Optional: Handle case where no algorithms are detected (e.g., return empty array or a default message)
+        console.log(
+          "No specific quantum algorithms detected for cost estimation."
+        );
+      }
+    } catch (estimationError) {
+      console.error("Error during combined cost estimation:", estimationError);
+      // Log and continue, returning analysis without estimates if estimation fails
+    }
+
     // Calculate a "quantum advantage score" (mocked for now)
     const score = Math.floor(Math.random() * 100);
     const quantumAdvantage = score > 50;
@@ -117,6 +151,7 @@ export async function POST(request) {
       detectedLanguage,
       conversionRequired,
       ...analysisResults,
+      costEstimates,
     });
   } catch (error) {
     console.error("Error analyzing code:", error);
