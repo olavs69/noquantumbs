@@ -3,7 +3,7 @@
 import { NextResponse } from "next/server";
 import { detectLanguage } from "@/lib/language-detection";
 import { analyzeCodeForQuantumPotential } from "@/lib/quantum-analysis";
-import { convertToJavaScript } from "@/lib/openai-converter";
+import { convertToJavaScript } from "@/lib/code-translator";
 
 export async function POST(request) {
   try {
