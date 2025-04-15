@@ -327,11 +327,15 @@ function factorialClassical(n) {
                       code that would benefit from quantum computing algorithms
                       based on our current heuristics.
                     </p>
+                    <p className="text-white/70 font-tech mb-6 max-w-lg mx-auto">
+                      However, there are quantum solutions that could still
+                      provide an advantage to your business.
+                    </p>
                     <Button
-                      onClick={() => setOpen(false)}
+                      onClick={() => router.push("/solutions")}
                       className="bg-black/40 hover:bg-black/50 border border-quantum-purple/30 text-white font-medium transition-all duration-300"
                     >
-                      Back to Homepage
+                      Explore Quantum Solutions
                     </Button>
                   </div>
                 </div>
