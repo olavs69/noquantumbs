@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { estimateQuantumSavings } from "@/utils/costEstimator";
+import { HelpCircle } from "lucide-react";
 
 const QuantumAnalysisPanel = ({
   costEstimates = [], // Accept array of initial estimates
@@ -148,8 +149,15 @@ const QuantumAnalysisPanel = ({
     <div className="p-4 bg-black/30 quantum-purple-border rounded-lg mb-4 space-y-6">
       {/* Problem Size Slider (remains outside the loop) */}
       <div>
-        <h3 className="text-lg font-semibold mb-3 font-quantum text-quantum-light-purple">
-          Adjust Problem Size (N)
+        <h3 className="text-lg font-semibold mb-3 font-quantum text-quantum-light-purple flex items-center">
+          Problem Size (N)
+          <div className="relative group ml-1">
+            <HelpCircle className="h-4 w-4 text-quantum-cyan cursor-help" />
+            <div className="absolute left-0 bottom-full mb-2 w-64 p-2 bg-black/90 text-white text-xs rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 pointer-events-none">
+              Problem Size (N) represents the input size of your computational
+              problem - data, iterations, queries, etc.
+            </div>
+          </div>
         </h3>
         <div className="flex items-center space-x-2 mb-2">
           <input
@@ -275,12 +283,6 @@ const QuantumAnalysisPanel = ({
                       {estimation.speedupFactor > 1 ? "FASTER" : "SLOWER"}
                     </span>
                   </div>
-                </div>
-                <div className="text-xs text-white/60 mb-1">
-                  Classical iterations:{" "}
-                  {formatNumber(Math.round(estimation.classicalIterations))} vs.
-                  Quantum iterations:{" "}
-                  {formatNumber(Math.round(estimation.quantumIterations))}
                 </div>
               </div>
 

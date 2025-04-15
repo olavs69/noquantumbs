@@ -81,13 +81,14 @@ const Hero = () => {
       <div className="container mx-auto px-4 z-20">
         <div className="text-center max-w-3xl mx-auto">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-quantum mb-6 tracking-wider">
-            <span className="block">Unlock your</span>
+            <span className="block">Unlock Your</span>
             <span className="quantum-glow text-quantum-cyan">
-              quantum superpowers
+              Quantum Superpowers
             </span>
           </h1>
           <p className="text-xl md:text-2xl max-w-lg mx-auto mb-8 text-gray-300">
-            Gather up-to-date information & figure out if you have the potential
+            Find Out What Quantum Computing Can Do for You{" "}
+            <span className="quantum-glow text-quantum-cyan">TODAY</span>
           </p>
           <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
             <Button

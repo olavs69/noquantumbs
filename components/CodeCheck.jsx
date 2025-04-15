@@ -143,9 +143,8 @@ function factorialClassical(n) {
             Assessment
           </h2>
           <p className="text-center text-white/70 mb-4 max-w-3xl mx-auto font-tech">
-            Paste your code below to analyze its potential for quantum
-            optimization. Our tool will assess if quantum computing could
-            provide significant performance advantages.
+            Should you quantum compute your code? Paste it below and our tool
+            will assess if quantum computing can save you time and money.
           </p>
 
           {/* Algorithm Support Tags */}
@@ -309,7 +308,7 @@ function factorialClassical(n) {
                       onClick={() => setOpen(false)}
                       className="bg-black/40 hover:bg-black/50 border border-quantum-purple/30 text-white font-medium transition-all duration-300"
                     >
-                      Back to Editor
+                      Back to Homepage
                     </Button>
                   </div>
                 </div>

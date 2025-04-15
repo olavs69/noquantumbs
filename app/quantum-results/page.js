@@ -155,21 +155,14 @@ const QuantumResultsPage = () => {
                         This code contains search patterns that could
                         potentially benefit from Grover&apos;s search algorithm.
                       </p>
-                      {results.potentialFindings &&
-                        results.potentialFindings.length > 0 && (
-                          <div>
-                            <p className="font-medium text-white/90">
-                              Specific areas:
-                            </p>
-                            <ul className="list-disc list-inside text-sm space-y-1 ml-4">
-                              {results.potentialFindings.map(
-                                (finding, index) => (
-                                  <li key={index}>{finding}</li>
-                                )
-                              )}
-                            </ul>
-                          </div>
-                        )}
+                      <p className="mt-2 text-sm text-white/70">
+                        Grover&apos;s algorithm provides a quadratic speedup for
+                        unstructured search problems. It can find a specific
+                        item in an unsorted database faster than classical
+                        algorithms. This makes it particularly useful for
+                        optimization problems, database searching, and
+                        cryptography.
+                      </p>
                     </div>
                   </div>
                 )}
@@ -187,19 +180,14 @@ const QuantumResultsPage = () => {
                         factorization or primality testing that could
                         potentially benefit from Shor&apos;s algorithm.
                       </p>
-                      {results.shorFindings &&
-                        results.shorFindings.length > 0 && (
-                          <div>
-                            <p className="font-medium text-white/90">
-                              Specific areas:
-                            </p>
-                            <ul className="list-disc list-inside text-sm space-y-1 ml-4">
-                              {results.shorFindings.map((finding, index) => (
-                                <li key={index}>{finding}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
+                      <p className="mt-2 text-sm text-white/70">
+                        Shor&apos;s algorithm can efficiently factor large
+                        integers and compute discrete logarithms, problems that
+                        are believed to be intractable for classical computers.
+                        It achieves an exponential speedup over the best-known
+                        classical algorithms, making it a significant threat to
+                        current public-key cryptography systems like RSA.
+                      </p>
                     </div>
                   </div>
                 )}
@@ -216,19 +204,16 @@ const QuantumResultsPage = () => {
                         This code contains patterns that might be accelerated
                         using the Quantum Fourier Transform.
                       </p>
-                      {results.qftFindings &&
-                        results.qftFindings.length > 0 && (
-                          <div>
-                            <p className="font-medium text-white/90">
-                              Specific areas:
-                            </p>
-                            <ul className="list-disc list-inside text-sm space-y-1 ml-4">
-                              {results.qftFindings.map((finding, index) => (
-                                <li key={index}>{finding}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
+                      <p className="mt-2 text-sm text-white/70">
+                        The Quantum Fourier Transform is a quantum analogue of
+                        the classical discrete Fourier transform. It transforms
+                        quantum states from the time domain to the frequency
+                        domain and vice versa. QFT is a fundamental building
+                        block for many quantum algorithms. It provides an
+                        exponential speedup over the classical Fast Fourier
+                        Transform for certain applications, particularly in
+                        signal processing and period finding.
+                      </p>
                     </div>
                   </div>
                 )}
