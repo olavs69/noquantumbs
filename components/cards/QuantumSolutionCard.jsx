@@ -61,7 +61,7 @@ const QuantumSolutionCard = ({
           <div className="flex items-start gap-3 mb-auto w-full">
             {/* Logo or Fallback */}
             <motion.div
-              className="h-10 w-10 rounded-md overflow-hidden shrink-0 flex items-center justify-center text-white font-quantum relative bg-quantum-darker flex-shrink-0"
+              className="h-10 w-10 rounded-md overflow-hidden flex items-center justify-center text-white font-quantum relative bg-quantum-darker flex-shrink-0"
               style={
                 !logoUrl
                   ? { backgroundColor: getFallbackBackgroundColor() }
