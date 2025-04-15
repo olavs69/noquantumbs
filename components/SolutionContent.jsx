@@ -1,11 +1,28 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import QuantumSolutionCard from "@/components/cards/QuantumSolutionCard";
 import { motion } from "framer-motion";
+import useSWR from "swr";
 
-// Accept solutions as props
-const SolutionContent = ({ newSolutions = [], featuredSolutions = [] }) => {
+// Create a fetcher function for SWR
+const fetcher = (url) => fetch(url).then((res) => res.json());
+
+const SolutionContent = () => {
+  // Use SWR for data fetching
+  const { data: newSolutions = [], error: newError } = useSWR(
+    "/api/solutions/latest?limit=10",
+    fetcher
+  );
+  const { data: featuredSolutions = [], error: featuredError } = useSWR(
+    "/api/solutions/verified?limit=10",
+    fetcher
+  );
+
+  const isLoading =
+    (!newSolutions.length && !newError) ||
+    (!featuredSolutions.length && !featuredError);
+
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -96,23 +113,33 @@ const SolutionContent = ({ newSolutions = [], featuredSolutions = [] }) => {
               className="grid gap-3"
               variants={containerVariants}
             >
-              {Array.isArray(newSolutions) &&
-                newSolutions.map((solution) => (
-                  <motion.div
-                    key={solution.slug}
-                    variants={itemVariants}
-                  >
-                    <QuantumSolutionCard
-                      name={solution.name}
-                      category={solution.category}
-                      price={solution.price}
-                      commentCount={solution.comment_count}
-                      isVerified={solution.is_verified}
-                      slug={solution.slug}
-                      logoUrl={solution.logo_url}
-                    />
-                  </motion.div>
-                ))}
+              {isLoading
+                ? // Show loading state
+                  Array(3)
+                    .fill(0)
+                    .map((_, i) => (
+                      <div
+                        key={i}
+                        className="h-16 bg-quantum-darker/50 rounded-lg animate-pulse"
+                      ></div>
+                    ))
+                : Array.isArray(newSolutions) &&
+                  newSolutions.map((solution) => (
+                    <motion.div
+                      key={solution.slug}
+                      variants={itemVariants}
+                    >
+                      <QuantumSolutionCard
+                        name={solution.name}
+                        category={solution.category}
+                        price={solution.price}
+                        commentCount={solution.comment_count}
+                        isVerified={solution.is_verified}
+                        slug={solution.slug}
+                        logoUrl={solution.logo_url}
+                      />
+                    </motion.div>
+                  ))}
             </motion.div>
           </motion.div>
 
@@ -141,23 +168,33 @@ const SolutionContent = ({ newSolutions = [], featuredSolutions = [] }) => {
               className="grid gap-3"
               variants={containerVariants}
             >
-              {Array.isArray(featuredSolutions) &&
-                featuredSolutions.map((solution) => (
-                  <motion.div
-                    key={solution.slug}
-                    variants={itemVariants}
-                  >
-                    <QuantumSolutionCard
-                      name={solution.name}
-                      category={solution.category}
-                      price={solution.price}
-                      commentCount={solution.comment_count}
-                      isVerified={solution.is_verified}
-                      slug={solution.slug}
-                      logoUrl={solution.logo_url}
-                    />
-                  </motion.div>
-                ))}
+              {isLoading
+                ? // Show loading state
+                  Array(3)
+                    .fill(0)
+                    .map((_, i) => (
+                      <div
+                        key={i}
+                        className="h-16 bg-quantum-darker/50 rounded-lg animate-pulse"
+                      ></div>
+                    ))
+                : Array.isArray(featuredSolutions) &&
+                  featuredSolutions.map((solution) => (
+                    <motion.div
+                      key={solution.slug}
+                      variants={itemVariants}
+                    >
+                      <QuantumSolutionCard
+                        name={solution.name}
+                        category={solution.category}
+                        price={solution.price}
+                        commentCount={solution.comment_count}
+                        isVerified={solution.is_verified}
+                        slug={solution.slug}
+                        logoUrl={solution.logo_url}
+                      />
+                    </motion.div>
+                  ))}
             </motion.div>
           </motion.div>
         </div>
