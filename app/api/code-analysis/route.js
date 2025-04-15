@@ -141,13 +141,8 @@ export async function POST(request) {
       // Log and continue, returning analysis without estimates if estimation fails
     }
 
-    // Calculate a "quantum advantage score" (mocked for now)
-    const score = Math.floor(Math.random() * 100);
-    const quantumAdvantage = score > 50;
-
     return NextResponse.json({
       quantumAdvantage,
-      score,
       detectedLanguage,
       conversionRequired,
       ...analysisResults,
