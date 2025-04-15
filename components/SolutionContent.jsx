@@ -45,7 +45,7 @@ const SolutionContent = ({ newSolutions = [], featuredSolutions = [] }) => {
   };
   const [activeTab, setActiveTab] = React.useState("overview");
   return (
-    <div className="mx-auto max-w-6xl px-4 pb-20">
+    <div className="w-full px-4 pb-20">
       <div className="flex justify-center mb-6">
         <div className="w-full max-w-xs">
           <div className="grid grid-cols-2 bg-quantum-darker/50 p-1 rounded-full">
@@ -73,16 +73,16 @@ const SolutionContent = ({ newSolutions = [], featuredSolutions = [] }) => {
         </div>
       </div>
       {activeTab === "overview" && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-10">
           {/* New Solutions Section */}
           <motion.div
             initial="hidden"
             animate="visible"
             variants={sectionVariants}
-            className="bg-quantum-darker/30 backdrop-blur-sm rounded-xl p-5 border border-quantum-blue/20 hover:border-quantum-blue/40 transition-colors shadow-lg"
+            className="bg-quantum-darker/30 backdrop-blur-sm rounded-xl p-4 md:p-5 border border-quantum-blue/20 hover:border-quantum-blue/40 transition-colors shadow-lg"
           >
-            <div className="flex items-baseline mb-6">
-              <h2 className="text-2xl font-bold font-quantum text-quantum-cyan relative">
+            <div className="flex items-baseline mb-4 md:mb-6">
+              <h2 className="text-xl md:text-2xl font-bold font-quantum text-quantum-cyan relative">
                 New Solutions
                 <motion.div
                   className="absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-quantum-cyan to-transparent"
@@ -121,10 +121,10 @@ const SolutionContent = ({ newSolutions = [], featuredSolutions = [] }) => {
             initial="hidden"
             animate="visible"
             variants={sectionVariants}
-            className="bg-quantum-darker/30 backdrop-blur-sm rounded-xl p-5 border border-quantum-blue/20 hover:border-quantum-blue/40 transition-colors shadow-lg"
+            className="bg-quantum-darker/30 backdrop-blur-sm rounded-xl p-4 md:p-5 border border-quantum-blue/20 hover:border-quantum-blue/40 transition-colors shadow-lg"
           >
-            <div className="flex items-baseline mb-6">
-              <h2 className="text-2xl font-bold font-quantum text-quantum-cyan relative">
+            <div className="flex items-baseline mb-4 md:mb-6">
+              <h2 className="text-xl md:text-2xl font-bold font-quantum text-quantum-cyan relative">
                 Featured
                 <motion.div
                   className="absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-quantum-cyan to-transparent"
@@ -163,7 +163,7 @@ const SolutionContent = ({ newSolutions = [], featuredSolutions = [] }) => {
         </div>
       )}
       {activeTab === "customized" && (
-        <div className="text-center p-10 bg-quantum-darker/30 backdrop-blur-sm rounded-xl border border-quantum-blue/20">
+        <div className="text-center p-6 md:p-10 bg-quantum-darker/30 backdrop-blur-sm rounded-xl border border-quantum-blue/20">
           <h2 className="text-xl font-quantum text-quantum-cyan mb-4">
             Customized View
           </h2>

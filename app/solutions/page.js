@@ -13,14 +13,28 @@ const SolutionPage = async () => {
 
   return (
     <div className="min-h-screen bg-quantum-dark text-white">
-      <SolutionSidebar />
       <Navbar />
-      <div className="pt-16 relative">
-        <SolutionHero />
-        <SolutionContent
-          newSolutions={newSolutions}
-          featuredSolutions={featuredSolutions}
-        />
+      <div className="flex">
+        {/* Sidebar - hidden on mobile, shown on desktop */}
+        <div className="hidden lg:block lg:w-[280px] flex-shrink-0">
+          <SolutionSidebar />
+        </div>
+
+        {/* Main content area */}
+        <div className="flex-grow">
+          <div className="pt-16 relative">
+            <SolutionHero />
+            <SolutionContent
+              newSolutions={newSolutions}
+              featuredSolutions={featuredSolutions}
+            />
+          </div>
+        </div>
+
+        {/* Mobile sidebar - rendered in the component itself */}
+        <div className="lg:hidden">
+          <SolutionSidebar />
+        </div>
       </div>
     </div>
   );
