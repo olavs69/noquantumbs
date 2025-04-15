@@ -3,16 +3,9 @@
 import React from "react";
 import QuantumSolutionCard from "@/components/cards/QuantumSolutionCard";
 import { motion } from "framer-motion";
-import {
-  getNewSolutions,
-  getFeaturedSolutions,
-} from "@/app/solutions/solutionData";
 
-const SolutionContent = () => {
-  // Get solutions from our data source
-  const newSolutions = getNewSolutions();
-  const featuredSolutions = getFeaturedSolutions();
-
+// Accept solutions as props
+const SolutionContent = ({ newSolutions = [], featuredSolutions = [] }) => {
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -79,88 +72,106 @@ const SolutionContent = () => {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-        {/* New Solutions Section */}
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={sectionVariants}
-          className="bg-quantum-darker/30 backdrop-blur-sm rounded-xl p-5 border border-quantum-blue/20 hover:border-quantum-blue/40 transition-colors shadow-lg"
-        >
-          <div className="flex items-baseline mb-6">
-            <h2 className="text-2xl font-bold font-quantum text-quantum-cyan relative">
-              New Solutions
-              <motion.div
-                className="absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-quantum-cyan to-transparent"
-                initial={{ width: 0 }}
-                animate={{ width: "100%" }}
-                transition={{ delay: 0.5, duration: 0.8 }}
-              />
-            </h2>
-          </div>
+      {activeTab === "overview" && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          {/* New Solutions Section */}
           <motion.div
-            className="grid gap-3"
-            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            variants={sectionVariants}
+            className="bg-quantum-darker/30 backdrop-blur-sm rounded-xl p-5 border border-quantum-blue/20 hover:border-quantum-blue/40 transition-colors shadow-lg"
           >
-            {newSolutions.map((solution, index) => (
-              <motion.div
-                key={solution.name}
-                variants={itemVariants}
-              >
-                <QuantumSolutionCard
-                  name={solution.name}
-                  category={solution.category}
-                  price={solution.price}
-                  commentCount={solution.commentCount}
-                  isVerified={solution.isVerified}
+            <div className="flex items-baseline mb-6">
+              <h2 className="text-2xl font-bold font-quantum text-quantum-cyan relative">
+                New Solutions
+                <motion.div
+                  className="absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-quantum-cyan to-transparent"
+                  initial={{ width: 0 }}
+                  animate={{ width: "100%" }}
+                  transition={{ delay: 0.5, duration: 0.8 }}
                 />
-              </motion.div>
-            ))}
+              </h2>
+            </div>
+            <motion.div
+              className="grid gap-3"
+              variants={containerVariants}
+            >
+              {Array.isArray(newSolutions) &&
+                newSolutions.map((solution) => (
+                  <motion.div
+                    key={solution.slug}
+                    variants={itemVariants}
+                  >
+                    <QuantumSolutionCard
+                      name={solution.name}
+                      category={solution.category}
+                      price={solution.price}
+                      commentCount={solution.comment_count}
+                      isVerified={solution.is_verified}
+                      slug={solution.slug}
+                      logoUrl={solution.logo_url}
+                    />
+                  </motion.div>
+                ))}
+            </motion.div>
           </motion.div>
-        </motion.div>
 
-        {/* Featured Solutions Section */}
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={sectionVariants}
-          className="bg-quantum-darker/30 backdrop-blur-sm rounded-xl p-5 border border-quantum-blue/20 hover:border-quantum-blue/40 transition-colors shadow-lg"
-        >
-          <div className="flex items-baseline mb-6">
-            <h2 className="text-2xl font-bold font-quantum text-quantum-cyan relative">
-              Featured
-              <motion.div
-                className="absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-quantum-cyan to-transparent"
-                initial={{ width: 0 }}
-                animate={{ width: "100%" }}
-                transition={{ delay: 0.7, duration: 0.8 }}
-              />
-            </h2>
-            <sup className="ml-2 text-xs rounded-full bg-quantum-blue/30 px-1.5 py-0.5 text-quantum-glow">
-              Q
-            </sup>
-          </div>
+          {/* Featured Solutions Section */}
           <motion.div
-            className="grid gap-3"
-            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            variants={sectionVariants}
+            className="bg-quantum-darker/30 backdrop-blur-sm rounded-xl p-5 border border-quantum-blue/20 hover:border-quantum-blue/40 transition-colors shadow-lg"
           >
-            {featuredSolutions.map((solution, index) => (
-              <motion.div
-                key={solution.name}
-                variants={itemVariants}
-              >
-                <QuantumSolutionCard
-                  name={solution.name}
-                  category={solution.category}
-                  price={solution.price}
-                  commentCount={solution.commentCount}
-                  isVerified={solution.isVerified}
+            <div className="flex items-baseline mb-6">
+              <h2 className="text-2xl font-bold font-quantum text-quantum-cyan relative">
+                Featured
+                <motion.div
+                  className="absolute -bottom-2 left-0 right-0 h-0.5 bg-gradient-to-r from-quantum-cyan to-transparent"
+                  initial={{ width: 0 }}
+                  animate={{ width: "100%" }}
+                  transition={{ delay: 0.7, duration: 0.8 }}
                 />
-              </motion.div>
-            ))}
+              </h2>
+              <sup className="ml-2 text-xs rounded-full bg-quantum-blue/30 px-1.5 py-0.5 text-quantum-glow">
+                Q
+              </sup>
+            </div>
+            <motion.div
+              className="grid gap-3"
+              variants={containerVariants}
+            >
+              {Array.isArray(featuredSolutions) &&
+                featuredSolutions.map((solution) => (
+                  <motion.div
+                    key={solution.slug}
+                    variants={itemVariants}
+                  >
+                    <QuantumSolutionCard
+                      name={solution.name}
+                      category={solution.category}
+                      price={solution.price}
+                      commentCount={solution.comment_count}
+                      isVerified={solution.is_verified}
+                      slug={solution.slug}
+                      logoUrl={solution.logo_url}
+                    />
+                  </motion.div>
+                ))}
+            </motion.div>
           </motion.div>
-        </motion.div>
-      </div>
+        </div>
+      )}
+      {activeTab === "customized" && (
+        <div className="text-center p-10 bg-quantum-darker/30 backdrop-blur-sm rounded-xl border border-quantum-blue/20">
+          <h2 className="text-xl font-quantum text-quantum-cyan mb-4">
+            Customized View
+          </h2>
+          <p className="text-gray-400">
+            This section is under construction. Tailored solutions coming soon!
+          </p>
+        </div>
+      )}
     </div>
   );
 };

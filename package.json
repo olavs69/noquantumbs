@@ -13,6 +13,7 @@
     "@babel/traverse": "^7.27.0",
     "@radix-ui/react-slot": "^1.2.0",
     "@shadcn/ui": "^0.0.4",
+    "@supabase/supabase-js": "^2.49.4",
     "@tsparticles/engine": "^3.8.1",
     "@tsparticles/react": "^3.0.0",
     "@tsparticles/slim": "^3.8.1",
