@@ -157,7 +157,7 @@ const SolutionSidebar = ({ className = "" }) => {
           icon={<Users size={18} />}
           label="Community"
           isActive={pathname === "/community"}
-          href="/404"
+          href="/community"
           onClick={handleItemClick}
         />
         <SidebarItem
