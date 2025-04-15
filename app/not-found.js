@@ -1,9 +1,11 @@
 import { SparklesCore } from "@/components/ui/sparkles";
 import Link from "next/link";
+import Navbar from "@/components/Navbar";
 
 export default function NotFound() {
   return (
     <div className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden">
+      <Navbar />
       {/* Background with gradient matching main site */}
       <div
         className="absolute inset-0 w-full h-full"
