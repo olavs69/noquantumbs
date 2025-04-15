@@ -13,7 +13,6 @@ const Hero = () => {
     const handleMouseMove = (e) => {
       if (!heroRef.current || !eyesRef.current) return;
 
-      const heroRect = heroRef.current.getBoundingClientRect();
       const eyesRect = eyesRef.current.getBoundingClientRect();
 
       // Calculate center points
@@ -94,6 +93,9 @@ const Hero = () => {
             <Button
               size="lg"
               className="bg-quantum-blue hover:bg-quantum-cyan text-black font-semibold font-quantum flex items-center space-x-2"
+              onClick={() => {
+                window.location.href = "/#quantum-assessment";
+              }}
             >
               <span>Get Started</span>
               <ArrowRight className="h-4 w-4" />
@@ -102,8 +104,11 @@ const Hero = () => {
               variant="outline"
               size="lg"
               className="border-quantum-blue text-quantum-blue hover:text-quantum-cyan hover:border-quantum-cyan font-quantum"
+              onClick={() => {
+                window.location.href = "/solutions";
+              }}
             >
-              Learn More
+              Explore Solutions
             </Button>
           </div>
         </div>

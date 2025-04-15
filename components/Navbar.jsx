@@ -55,12 +55,23 @@ const Navbar = () => {
           {/* Desktop menu */}
           <div className="hidden md:flex items-center space-x-6">
             <a
-              href="#contact"
+              href="/#contact"
               className="font-quantum text-gray-300 hover:text-quantum-cyan transition-colors duration-300"
             >
               Contact
             </a>
-            <Button className="bg-quantum-blue hover:bg-quantum-cyan font-quantum text-black">
+            <a
+              href="/solutions"
+              className="font-quantum text-gray-300 hover:text-quantum-cyan transition-colors duration-300"
+            >
+              Solutions
+            </a>
+            <Button
+              className="bg-quantum-blue hover:bg-quantum-cyan font-quantum text-black"
+              onClick={() => {
+                window.location.href = "/#quantum-assessment";
+              }}
+            >
               Get Started
             </Button>
           </div>
@@ -86,13 +97,24 @@ const Navbar = () => {
         <div className="md:hidden bg-quantum-darker/90 backdrop-blur-lg">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <a
-              href="#contact"
+              href="/#contact"
               className="block px-3 py-2 rounded-md text-base font-medium font-quantum text-gray-300 hover:text-quantum-cyan hover:bg-quantum-blue/10 transition-colors duration-300"
             >
               Contact
             </a>
+            <a
+              href="/solutions"
+              className="block px-3 py-2 rounded-md text-base font-medium font-quantum text-gray-300 hover:text-quantum-cyan hover:bg-quantum-blue/10 transition-colors duration-300"
+            >
+              Solutions
+            </a>
             <div className="px-3 py-2">
-              <Button className="w-full bg-quantum-blue hover:bg-quantum-cyan font-quantum text-black">
+              <Button
+                className="w-full bg-quantum-blue hover:bg-quantum-cyan font-quantum text-black"
+                onClick={() => {
+                  window.location.href = "/#quantum-assessment";
+                }}
+              >
                 Get Started
               </Button>
             </div>
