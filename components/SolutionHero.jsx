@@ -9,9 +9,9 @@ import { searchSolutions } from "@/lib/solutions";
 import { useRouter } from "next/navigation";
 
 const SolutionHero = ({
-  solutionCount = 142,
+  solutionCount = 63,
   industryCount = 38,
-  projectCount = 567,
+  countryCount = 39,
   spotlight = "NoQuantumBS",
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -93,16 +93,16 @@ const SolutionHero = ({
         </span>{" "}
         industries and{" "}
         <span className="text-quantum-glow">
-          {projectCount.toLocaleString()}
+          {countryCount.toLocaleString()}
         </span>{" "}
-        projects.
+        countries.
       </div>
 
       {spotlight && (
         <div className="text-sm mb-6">
           Spotlight:{" "}
           <a
-            href="/spotlight"
+            href="/solutions/noquantumbs"
             className="text-quantum-cyan underline underline-offset-4 hover:text-quantum-glow"
           >
             {spotlight}
