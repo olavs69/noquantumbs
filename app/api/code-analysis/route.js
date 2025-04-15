@@ -141,6 +141,12 @@ export async function POST(request) {
       // Log and continue, returning analysis without estimates if estimation fails
     }
 
+    // Determine if there is any quantum advantage based on analysis
+    const quantumAdvantage =
+      analysisResults.groverPotential ||
+      analysisResults.shorPotential ||
+      analysisResults.qftPotential;
+
     return NextResponse.json({
       quantumAdvantage,
       detectedLanguage,
