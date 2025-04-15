@@ -147,22 +147,6 @@ function factorialClassical(n) {
             will assess if quantum computing can save you time and money.
           </p>
 
-          {/* Algorithm Support Tags */}
-          <h3 className="text-center text-white/80 font-quantum text-sm mb-3">
-            Currently supports checks for:
-          </h3>
-          <div className="flex justify-center gap-2 mb-6">
-            <div className="inline-flex items-center px-3 py-1 rounded-full bg-black/30 border border-quantum-purple/40 text-green-400 text-xs font-medium">
-              <span className="mr-1">●</span> Grover&apos;s Algorithm
-            </div>
-            <div className="inline-flex items-center px-3 py-1 rounded-full bg-black/30 border border-quantum-purple/40 text-pink-400 text-xs font-medium">
-              <span className="mr-1">●</span> Shor&apos;s Algorithm
-            </div>
-            <div className="inline-flex items-center px-3 py-1 rounded-full bg-black/30 border border-quantum-purple/40 text-blue-400 text-xs font-medium">
-              <span className="mr-1">●</span> Quantum Fourier Transform
-            </div>
-          </div>
-
           <div className="max-w-4xl mx-auto">
             <div className="relative p-4 bg-black/20 quantum-purple-border rounded-lg">
               <div className="flex justify-between items-center mb-2">
@@ -215,7 +199,21 @@ function factorialClassical(n) {
           </div>
         </div>
       </div>
-
+      {/* Algorithm Support Tags */}
+      <h3 className="text-center text-white/80 font-quantum text-sm mb-3">
+        Currently supports checks for:
+      </h3>
+      <div className="flex justify-center gap-2 mb-6">
+        <div className="inline-flex items-center px-3 py-1 rounded-full bg-black/30 border border-quantum-purple/40 text-green-400 text-xs font-medium">
+          <span className="mr-1">●</span> Grover&apos;s Algorithm
+        </div>
+        <div className="inline-flex items-center px-3 py-1 rounded-full bg-black/30 border border-quantum-purple/40 text-pink-400 text-xs font-medium">
+          <span className="mr-1">●</span> Shor&apos;s Algorithm
+        </div>
+        <div className="inline-flex items-center px-3 py-1 rounded-full bg-black/30 border border-quantum-purple/40 text-blue-400 text-xs font-medium">
+          <span className="mr-1">●</span> Quantum Fourier Transform
+        </div>
+      </div>
       {/* Redirect section */}
       <div className="py-6 px-4 text-center relative z-10">
         <div className="max-w-3xl mx-auto bg-black/30 border border-quantum-purple/50 rounded-xl p-8 shadow-lg relative overflow-hidden">
