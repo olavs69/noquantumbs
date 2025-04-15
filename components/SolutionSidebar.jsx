@@ -64,6 +64,9 @@ const SolutionSidebar = ({ className = "" }) => {
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 1024);
+      if (window.innerWidth >= 1024) {
+        setIsMobileOpen(false);
+      }
     };
 
     // Initial check
@@ -73,12 +76,30 @@ const SolutionSidebar = ({ className = "" }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Close mobile sidebar when route changes
+  useEffect(() => {
+    setIsMobileOpen(false);
+  }, [pathname]);
+
   // Close sidebar when clicking a link on mobile
   const handleItemClick = () => {
     if (isMobile) {
       setIsMobileOpen(false);
     }
   };
+
+  // Disable body scroll when mobile sidebar is open
+  useEffect(() => {
+    if (isMobile && isMobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isMobile, isMobileOpen]);
 
   // Sidebar content
   const sidebarContent = (
@@ -157,6 +178,7 @@ const SolutionSidebar = ({ className = "" }) => {
         <button
           onClick={() => setIsMobileOpen(!isMobileOpen)}
           className="fixed bottom-4 right-4 z-50 bg-quantum-blue text-black p-3 rounded-full shadow-lg hover:bg-quantum-cyan transition-colors"
+          aria-label={isMobileOpen ? "Close sidebar" : "Open sidebar"}
         >
           {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
@@ -188,9 +210,9 @@ const SolutionSidebar = ({ className = "" }) => {
 
           {/* Sidebar */}
           <div
-            className={`w-[280px] h-screen fixed left-0 top-0 border-r border-quantum-blue/30 bg-black/80 backdrop-blur-md flex flex-col pt-16 z-50 transition-transform duration-300 ${
+            className={`w-[280px] h-screen fixed left-0 top-0 border-r border-quantum-blue/30 bg-black/80 backdrop-blur-md flex flex-col pt-16 z-50 transition-transform duration-300 transform ${
               isMobileOpen ? "translate-x-0" : "-translate-x-full"
-            }`}
+            } overflow-y-auto`}
             onClick={(e) => e.stopPropagation()}
           >
             {sidebarContent}

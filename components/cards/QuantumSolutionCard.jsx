@@ -39,7 +39,7 @@ const QuantumSolutionCard = ({
   return (
     <Link href={`/solutions/${cardSlug}`}>
       <motion.div
-        className="bg-quantum-darker/60 border border-quantum-blue/30 hover:bg-quantum-blue/10 hover:border-quantum-cyan/60 transition-all duration-300 rounded-md overflow-hidden shadow-lg relative group cursor-pointer h-full flex flex-col"
+        className="bg-quantum-darker/60 border border-quantum-blue/30 hover:bg-quantum-blue/10 hover:border-quantum-cyan/60 transition-all duration-300 rounded-md overflow-hidden shadow-lg relative group cursor-pointer h-full flex flex-col w-full"
         whileHover={{
           scale: 1.02,
           boxShadow: "0 0 15px rgba(0, 255, 255, 0.2)",
@@ -57,11 +57,11 @@ const QuantumSolutionCard = ({
           <div className="absolute bottom-0 right-0 w-full h-[1px] bg-gradient-to-l from-quantum-cyan/80 to-transparent"></div>
         </div>
 
-        <div className="p-4 relative z-10 flex-grow flex flex-col">
-          <div className="flex items-start gap-3 mb-auto">
+        <div className="p-4 relative z-10 flex-grow flex flex-col w-full">
+          <div className="flex items-start gap-3 mb-auto w-full">
             {/* Logo or Fallback */}
             <motion.div
-              className="h-10 w-10 rounded-md overflow-hidden shrink-0 flex items-center justify-center text-white font-quantum relative bg-quantum-darker"
+              className="h-10 w-10 rounded-md overflow-hidden shrink-0 flex items-center justify-center text-white font-quantum relative bg-quantum-darker flex-shrink-0"
               style={
                 !logoUrl
                   ? { backgroundColor: getFallbackBackgroundColor() }
@@ -86,14 +86,14 @@ const QuantumSolutionCard = ({
               )}
             </motion.div>
 
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-1">
-                <h3 className="font-medium text-sm font-quantum text-quantum-cyan truncate group-hover:text-quantum-glow transition-colors duration-300">
+            <div className="flex-1 min-w-0 overflow-hidden">
+              <div className="flex items-center gap-1 max-w-full">
+                <h3 className="font-medium text-sm font-quantum text-quantum-cyan truncate group-hover:text-quantum-glow transition-colors duration-300 max-w-full">
                   {name}
                 </h3>
                 {isVerified && (
                   <motion.span
-                    className="inline-flex items-center text-quantum-glow"
+                    className="inline-flex items-center text-quantum-glow flex-shrink-0"
                     initial={{ scale: 1 }}
                     whileHover={{ scale: 1.2, rotate: 10 }}
                     title="Verified"
@@ -118,23 +118,27 @@ const QuantumSolutionCard = ({
             </div>
           </div>
 
-          <div className="flex items-center mt-3 gap-2">
+          <div className="flex items-center mt-3 gap-2 w-full overflow-hidden">
             <motion.div
-              className="text-xs px-1.5 py-0 h-5 font-normal border border-quantum-blue/30 bg-quantum-darker/80 rounded text-gray-400 group-hover:border-quantum-cyan/50 group-hover:text-gray-300 transition-colors duration-300 whitespace-nowrap"
+              className="text-xs px-1.5 py-0 h-5 font-normal border border-quantum-blue/30 bg-quantum-darker/80 rounded text-gray-400 group-hover:border-quantum-cyan/50 group-hover:text-gray-300 transition-colors duration-300 whitespace-nowrap overflow-hidden text-ellipsis flex-shrink-0 max-w-[100px]"
               whileHover={{ scale: 1.05 }}
+              title={category}
             >
               {category}
             </motion.div>
 
             {price && (
-              <span className="text-xs text-gray-500 group-hover:text-gray-400 transition-colors duration-300 whitespace-nowrap">
+              <span
+                className="text-xs text-gray-500 group-hover:text-gray-400 transition-colors duration-300 whitespace-nowrap overflow-hidden text-ellipsis flex-shrink-0 max-w-[80px]"
+                title={price}
+              >
                 {price}
               </span>
             )}
 
             {commentCount > 0 && (
               <motion.div
-                className="ml-auto flex items-center text-gray-500 group-hover:text-gray-400 transition-colors duration-300"
+                className="ml-auto flex items-center text-gray-500 group-hover:text-gray-400 transition-colors duration-300 flex-shrink-0"
                 whileHover={{ scale: 1.1 }}
                 title={`${commentCount} comments`}
               >

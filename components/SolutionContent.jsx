@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import QuantumSolutionCard from "@/components/cards/QuantumSolutionCard";
 import { motion } from "framer-motion";
 import useSWR from "swr";
@@ -90,13 +90,13 @@ const SolutionContent = () => {
         </div>
       </div>
       {activeTab === "overview" && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-10 max-w-[1200px] mx-auto">
           {/* New Solutions Section */}
           <motion.div
             initial="hidden"
             animate="visible"
             variants={sectionVariants}
-            className="bg-quantum-darker/30 backdrop-blur-sm rounded-xl p-4 md:p-5 border border-quantum-blue/20 hover:border-quantum-blue/40 transition-colors shadow-lg"
+            className="bg-quantum-darker/30 backdrop-blur-sm rounded-xl p-4 md:p-5 border border-quantum-blue/20 hover:border-quantum-blue/40 transition-colors shadow-lg w-full overflow-hidden"
           >
             <div className="flex items-baseline mb-4 md:mb-6">
               <h2 className="text-xl md:text-2xl font-bold font-quantum text-quantum-cyan relative">
@@ -110,7 +110,7 @@ const SolutionContent = () => {
               </h2>
             </div>
             <motion.div
-              className="grid gap-3"
+              className="grid gap-3 w-full"
               variants={containerVariants}
             >
               {isLoading
@@ -128,6 +128,7 @@ const SolutionContent = () => {
                     <motion.div
                       key={solution.slug}
                       variants={itemVariants}
+                      className="w-full"
                     >
                       <QuantumSolutionCard
                         name={solution.name}
@@ -148,7 +149,7 @@ const SolutionContent = () => {
             initial="hidden"
             animate="visible"
             variants={sectionVariants}
-            className="bg-quantum-darker/30 backdrop-blur-sm rounded-xl p-4 md:p-5 border border-quantum-blue/20 hover:border-quantum-blue/40 transition-colors shadow-lg"
+            className="bg-quantum-darker/30 backdrop-blur-sm rounded-xl p-4 md:p-5 border border-quantum-blue/20 hover:border-quantum-blue/40 transition-colors shadow-lg w-full overflow-hidden"
           >
             <div className="flex items-baseline mb-4 md:mb-6">
               <h2 className="text-xl md:text-2xl font-bold font-quantum text-quantum-cyan relative">
@@ -165,7 +166,7 @@ const SolutionContent = () => {
               </sup>
             </div>
             <motion.div
-              className="grid gap-3"
+              className="grid gap-3 w-full"
               variants={containerVariants}
             >
               {isLoading
@@ -183,6 +184,7 @@ const SolutionContent = () => {
                     <motion.div
                       key={solution.slug}
                       variants={itemVariants}
+                      className="w-full"
                     >
                       <QuantumSolutionCard
                         name={solution.name}
@@ -200,7 +202,7 @@ const SolutionContent = () => {
         </div>
       )}
       {activeTab === "customized" && (
-        <div className="text-center p-6 md:p-10 bg-quantum-darker/30 backdrop-blur-sm rounded-xl border border-quantum-blue/20">
+        <div className="text-center p-6 md:p-10 bg-quantum-darker/30 backdrop-blur-sm rounded-xl border border-quantum-blue/20 max-w-[1200px] mx-auto overflow-hidden">
           <h2 className="text-xl font-quantum text-quantum-cyan mb-4">
             Customized View
           </h2>
