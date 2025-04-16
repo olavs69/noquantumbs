@@ -12,9 +12,30 @@ import { ModalProvider } from "@/components/ui/animated-modal";
 export default function Home() {
   useEffect(() => {
     // Initialize scroll reveal animations
-    const cleanup = initScrollReveal();
+    const cleanupScroll = initScrollReveal();
     document.title = "NoQuantumBS - Cutting Through Quantum Computing Hype";
-    return cleanup;
+
+    // Load Voiceflow chat widget
+    (function (d, t) {
+      var v = d.createElement(t),
+        s = d.getElementsByTagName(t)[0];
+      v.onload = function () {
+        window.voiceflow.chat.load({
+          verify: { projectID: "67ff5159c11ab40f19e70467" },
+          url: "https://general-runtime.voiceflow.com",
+          versionID: "production",
+          voice: {
+            url: "https://runtime-api.voiceflow.com",
+          },
+        });
+      };
+      v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs";
+      v.type = "text/javascript";
+      s.parentNode.insertBefore(v, s);
+    })(document, "script");
+
+    // Cleanup function for scroll reveal
+    return cleanupScroll;
   }, []);
 
   return (
