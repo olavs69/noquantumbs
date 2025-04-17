@@ -392,6 +392,31 @@ const SolutionDetailPage = () => {
                     ))}
                 </ul>
               </motion.div>
+
+              {!solution.is_verified && (
+                <motion.div
+                  className="bg-quantum-darker/30 backdrop-blur-sm rounded-xl p-6 border border-quantum-blue/20 border-dashed hover:border-quantum-blue/40 transition-colors shadow-lg mt-6"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.6 }}
+                >
+                  <h2 className="text-xl font-bold text-quantum-cyan mb-3">
+                    Claim This Solution
+                  </h2>
+                  <p className="text-gray-300 mb-4">
+                    Are you the owner or representative of {solution.name}?
+                    Claim this solution to verify your listing and gain access
+                    to enhanced features.
+                  </p>
+                  <button className="w-full bg-quantum-blue hover:bg-quantum-blue/80 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center transition-colors">
+                    <CheckCircle
+                      size={18}
+                      className="mr-2"
+                    />
+                    Claim Solution
+                  </button>
+                </motion.div>
+              )}
             </div>
           </div>
         </div>
