@@ -16,26 +16,44 @@ export default function Home() {
     document.title = "NoQuantumBS - Cutting Through Quantum Computing Hype";
 
     // Load Voiceflow chat widget
-    (function (d, t) {
-      var v = d.createElement(t),
-        s = d.getElementsByTagName(t)[0];
-      v.onload = function () {
-        window.voiceflow.chat.load({
-          verify: { projectID: "67ff5159c11ab40f19e70467" },
-          url: "https://general-runtime.voiceflow.com",
-          versionID: "production",
-          voice: {
-            url: "https://runtime-api.voiceflow.com",
-          },
-        });
-      };
-      v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs";
-      v.type = "text/javascript";
-      s.parentNode.insertBefore(v, s);
-    })(document, "script");
+    // Check if the widget is already loaded to prevent multiple initializations
+    if (!window.voiceflowWidgetLoaded) {
+      window.voiceflowWidgetLoaded = true;
 
-    // Cleanup function for scroll reveal
-    return cleanupScroll;
+      (function (d, t) {
+        var v = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+        v.onload = function () {
+          window.voiceflow.chat.load({
+            verify: { projectID: "67ff5159c11ab40f19e70467" },
+            url: "https://general-runtime.voiceflow.com",
+            versionID: "production",
+            voice: {
+              url: "https://runtime-api.voiceflow.com",
+            },
+          });
+        };
+        v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs";
+        v.type = "text/javascript";
+        v.id = "voiceflow-widget-script";
+        s.parentNode.insertBefore(v, s);
+      })(document, "script");
+    }
+
+    // Cleanup function
+    return () => {
+      cleanupScroll();
+
+      // Optional: Clean up Voiceflow on unmount if you want to completely
+      // remove it when navigating away from this page
+      if (
+        window.voiceflow &&
+        window.voiceflow.chat &&
+        typeof window.voiceflow.chat.destroy === "function"
+      ) {
+        window.voiceflow.chat.destroy();
+      }
+    };
   }, []);
 
   return (
