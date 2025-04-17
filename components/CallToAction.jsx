@@ -2,11 +2,15 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle } from "lucide-react";
+import { ArrowRight, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { Vortex } from "@/components/ui/vortex";
+import { submitSubscribeForm } from "@/app/api/actions/subscribe";
+
 const CallToAction = () => {
   const [email, setEmail] = useState("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const ctaRef = useRef(null);
 
   useEffect(() => {
@@ -33,17 +37,49 @@ const CallToAction = () => {
     };
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (email) {
-      // In a real app, this would send the email to a backend
-      setIsSubmitted(true);
-      setEmail("");
 
-      // Reset form after 3 seconds
-      setTimeout(() => {
-        setIsSubmitted(false);
-      }, 3000);
+    // Basic email validation
+    if (!email || !email.includes("@") || !email.includes(".")) {
+      setErrorMessage("Please enter a valid email address");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitStatus("");
+    setErrorMessage("");
+
+    try {
+      // Create a FormData object for server actions
+      const formData = new FormData();
+      formData.append("email", email);
+
+      // Alternative approach just to be safe
+      const result = await submitSubscribeForm(formData);
+      console.log("Form submission result:", result);
+
+      if (result.success) {
+        // Clear form
+        setEmail("");
+        setSubmitStatus("success");
+
+        // Reset form after 3 seconds
+        setTimeout(() => {
+          setSubmitStatus("");
+        }, 3000);
+      } else {
+        setSubmitStatus("error");
+        setErrorMessage(
+          result.error || "Failed to subscribe. Please try again."
+        );
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      setSubmitStatus("error");
+      setErrorMessage("An unexpected error occurred. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -95,12 +131,16 @@ const CallToAction = () => {
                 <input
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    // Clear error when user starts typing again
+                    if (errorMessage) setErrorMessage("");
+                  }}
                   placeholder="Enter your email"
                   className="w-full px-4 py-3 rounded-lg bg-quantum-darker border border-quantum-blue/30 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-quantum-cyan/50"
                   required
                 />
-                {isSubmitted && (
+                {submitStatus === "success" && (
                   <div className="absolute inset-0 flex items-center justify-center bg-quantum-darker/90 rounded-lg">
                     <div className="flex items-center text-quantum-cyan">
                       <CheckCircle className="mr-2 h-5 w-5" />
@@ -112,11 +152,27 @@ const CallToAction = () => {
               <Button
                 type="submit"
                 className="bg-quantum-blue hover:bg-quantum-cyan text-black font-semibold font-quantum flex items-center justify-center gap-2"
+                disabled={isSubmitting}
               >
-                Get Started
-                <ArrowRight className="h-4 w-4" />
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    Get Started
+                    <ArrowRight className="h-4 w-4" />
+                  </>
+                )}
               </Button>
             </div>
+            {errorMessage && (
+              <p className="text-red-400 text-sm flex items-center mt-2 justify-center">
+                <AlertCircle className="h-4 w-4 mr-1" />
+                {errorMessage}
+              </p>
+            )}
           </form>
         </div>
       </div>
