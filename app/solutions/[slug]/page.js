@@ -17,6 +17,7 @@ import Navbar from "@/components/Navbar.jsx";
 import { getSolutionBySlug } from "@/lib/solutions";
 import SolutionHero from "@/components/SolutionHero.jsx";
 import SolutionSidebar from "@/components/SolutionSidebar";
+import ClaimModal from "@/components/ClaimModal";
 import Image from "next/image";
 
 const SolutionDetailPage = () => {
@@ -25,6 +26,7 @@ const SolutionDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
 
   // Check if we're on mobile
   useEffect(() => {
@@ -58,6 +60,14 @@ const SolutionDetailPage = () => {
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const openClaimModal = () => {
+    setIsClaimModalOpen(true);
+  };
+
+  const closeClaimModal = () => {
+    setIsClaimModalOpen(false);
   };
 
   const renderRating = (rating) => {
@@ -157,6 +167,13 @@ const SolutionDetailPage = () => {
           aria-hidden="true"
         />
       )}
+
+      {/* Claim Modal */}
+      <ClaimModal
+        isOpen={isClaimModalOpen}
+        onClose={closeClaimModal}
+        companyName={solution.name}
+      />
 
       {/* Main content area with dynamic padding */}
       <div
@@ -408,13 +425,25 @@ const SolutionDetailPage = () => {
                     Claim this solution to verify your listing and gain access
                     to enhanced features.
                   </p>
-                  <button className="w-full bg-quantum-blue hover:bg-quantum-blue/80 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center transition-colors">
-                    <CheckCircle
-                      size={18}
-                      className="mr-2"
-                    />
-                    Claim Solution
-                  </button>
+                  <motion.button
+                    className="w-full bg-quantum-blue hover:bg-quantum-blue/80 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center transition-all duration-300"
+                    onClick={openClaimModal}
+                    whileHover={{
+                      scale: 1.02,
+                      backgroundColor: "rgba(0, 180, 216, 0.9)",
+                      boxShadow: "0 0 15px rgba(0, 180, 216, 0.5)",
+                    }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <motion.span
+                      className="flex items-center"
+                      initial={{ gap: "0.5rem" }}
+                      whileHover={{ gap: "0.75rem" }}
+                    >
+                      <CheckCircle size={18} />
+                      <span>Claim Solution</span>
+                    </motion.span>
+                  </motion.button>
                 </motion.div>
               )}
             </div>
