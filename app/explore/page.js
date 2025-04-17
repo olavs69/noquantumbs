@@ -326,7 +326,7 @@ const ExplorePage = () => {
 
                   {showCategoryDropdown && (
                     <div
-                      className="absolute top-full left-0 mt-1 bg-quantum-darker border border-quantum-blue/30 rounded-md shadow-lg w-full md:w-64 max-h-60 overflow-y-auto"
+                      className="category-dropdown absolute top-full left-0 mt-1 bg-quantum-darker border border-quantum-blue/30 rounded-md shadow-lg w-full md:w-64 max-h-60 overflow-y-auto"
                       style={{ zIndex: 100 }}
                     >
                       {availableCategories.map((category) => (
@@ -383,7 +383,7 @@ const ExplorePage = () => {
 
                   {showApplicationDropdown && (
                     <div
-                      className="absolute top-full left-0 mt-1 bg-quantum-darker border border-quantum-blue/30 rounded-md shadow-lg w-full md:w-64 max-h-60 overflow-y-auto"
+                      className="application-dropdown absolute top-full left-0 mt-1 bg-quantum-darker border border-quantum-blue/30 rounded-md shadow-lg w-full md:w-64 max-h-60 overflow-y-auto"
                       style={{ zIndex: 100 }}
                     >
                       {availableApplications.map((application) => (
