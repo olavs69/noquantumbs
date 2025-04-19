@@ -8,6 +8,8 @@ import CallToAction from "@/components/CallToAction";
 import { initScrollReveal } from "@/utils/scrollAnimation";
 import CodeCheck from "@/components/CodeCheck";
 import { ModalProvider } from "@/components/ui/animated-modal";
+import Timeline from "@/components/Timeline";
+import HowItWorks from "@/components/HowItWorks";
 
 export default function Home() {
   useEffect(() => {
@@ -63,6 +65,8 @@ export default function Home() {
       <ModalProvider>
         <CodeCheck />
       </ModalProvider>
+      <HowItWorks />
+      <Timeline />
       {/*   <Applications /> */}
       <CallToAction />
     </div>

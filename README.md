@@ -1,21 +1,37 @@
-#############Raw Notes, DO NOT MODIFY THIS SECTION##############
+# NoQuantumBS - Cutting Through Quantum Computing Hype
 
-Project made with Next.js, React, TailwindCSS
+NoQuantumBS is a web platform designed to help users understand the practical applications of quantum computing.
 
-Initial designs made with ChatGPT, animated visuals mostly [AceternityUI](https://ui.aceternity.com/) (sparkles, vortex, animated modal...)
+## Features
 
-Initial backend approach -> analyse AST for quantum-speed-up-able structures {get AST via Babel}
+- **Quantum Advantage Assessment**: Upload your code to assess if quantum computing can provide speedup or advantages
+- **Code Analysis**: Automatically analyzes code to identify quantum computing potential
+- **Solutions Explorer**: Browse real-world quantum computing solutions and applications
+- **Quantum guide**: Answer your question on quantum technologies & get custom ROI assessment & solution recommendations.
 
-15.04. "What's going on here?" - After showing the implementation to a few friends/acquaintances/mentors, the feedback was "I don't get it", "What if I don't code? I just open, look at this and leave?", "So, if there's no advantage, then I just leave the page feeling like I've wasted my time?" {rephrased - the actual phrasing for some was less "proper"}
+## Tech Stack
 
-Todos:
-code assessment:
--caching
--security
--error handling
--testing
--pull & recalculate data based on pricings
--more accurate qubit & gate calculations
-Advanced: train ML to better predict classical vs. quantum speedups
+- **Framework**: Next.js 15.3.0
+- **Frontend**: React 19, Tailwind CSS, Shadcn UI components, AceternityUI
+- **Database**: Supabase
+- **Animation**: Framer Motion, Custom particle animations
+- **Chat Widget**: Voiceflow integration
 
-###############NON- MODIFIABLE SECTION ENDS HERE#################
+## Main Features Breakdown
+
+### Quantum Code Analysis
+
+Submit your code to get an assessment of whether quantum computing could provide benefits for your specific use case. The system analyzes algorithms and patterns to identify potential quantum speedup opportunities.
+
+### Solutions Explorer
+
+Browse through real-world quantum computing applications in various industries, with detailed explanations of how quantum technologies are being applied today.
+
+### Agentic Assistant
+
+Custom trained agentic assistant to help guide through the quantum world, asseess ROI of various quantum solutions & access to database to provide specific solutions.
+
+## Acknowledgments
+
+- Built with Next.js, React, and Tailwind CSS , Supabase for backend services
+- AceternityUI & Shadcn UI libraries

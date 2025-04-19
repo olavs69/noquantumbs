@@ -214,28 +214,6 @@ function factorialClassical(n) {
           <span className="mr-1">●</span> Quantum Fourier Transform
         </div>
       </div>
-      {/* Redirect section */}
-      <div className="py-6 px-4 text-center relative z-10">
-        <div className="max-w-3xl mx-auto bg-black/30 border border-quantum-purple/50 rounded-xl p-8 shadow-lg relative overflow-hidden">
-          {/* Glow effect */}
-          <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-quantum-cyan/20 rounded-full blur-[80px]"></div>
-          <div className="absolute -top-10 -left-10 w-48 h-48 bg-quantum-purple/20 rounded-full blur-[80px]"></div>
-
-          <h3 className="text-2xl md:text-3xl font-quantum mb-6 text-white quantum-glow">
-            Don&apos;t want to tinker with code but want that advantage?
-          </h3>
-          <p className="text-white/70 font-tech mb-8 max-w-2xl mx-auto">
-            Discover our ready-to-implement quantum solutions that can give your
-            business the quantum edge without the technical complexity.
-          </p>
-          <Button
-            onClick={() => router.push("/solutions")}
-            className="bg-gradient-to-r from-quantum-blue to-quantum-cyan hover:from-quantum-cyan hover:to-quantum-blue text-white font-medium font-quantum transition-all duration-300 text-lg px-8 py-6 rounded-md shadow-[0_0_15px_rgba(139,92,246,0.5)]"
-          >
-            Explore Quantum Solutions
-          </Button>
-        </div>
-      </div>
 
       {/* Results Modal - Only shown for errors or no quantum potential */}
       <ModalBody className="max-w-2xl w-full bg-black/90 border-quantum-purple">
