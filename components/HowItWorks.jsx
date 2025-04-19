@@ -72,7 +72,7 @@ const HowItWorks = () => {
 
             <div className="aspect-video w-full rounded-xl overflow-hidden quantum-border relative flex-1 flex items-center">
               {/* Pulse overlay */}
-              <div className="absolute inset-0 border-2 border-quantum-cyan/20 rounded-xl animate-quantum-wave"></div>
+              <div className="absolute inset-0 border-2 border-quantum-cyan/20 rounded-xl animate-quantum-wave pointer-events-none"></div>
               <iframe
                 className="w-full h-full"
                 src="https://www.youtube.com/embed/dQw4w9WgXcQ"
