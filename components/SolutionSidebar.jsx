@@ -126,13 +126,6 @@ const SolutionSidebar = ({ className = "" }) => {
           href="/featured"
           onClick={handleItemClick}
         />
-        <SidebarItem
-          icon={<Cpu size={18} />}
-          label="Hardware"
-          isActive={pathname === "/hardware"}
-          href="/404"
-          onClick={handleItemClick}
-        />
       </div>
 
       <div className="mt-4 border-t border-quantum-blue/20 pt-4 px-2">
@@ -143,14 +136,14 @@ const SolutionSidebar = ({ className = "" }) => {
           icon={<Heart size={18} />}
           label="Donate/Support"
           isActive={pathname === "/donate"}
-          href="/404"
+          href="/donate"
           onClick={handleItemClick}
         />
         <SidebarItem
           icon={<MessageSquarePlus size={18} />}
           label="Submit/Advertise"
           isActive={pathname === "/submit"}
-          href="/404"
+          href="/submit"
           onClick={handleItemClick}
         />
         <SidebarItem
